@@ -55,6 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+<<<<<<< HEAD
 
 # Vim
 *.sw*
