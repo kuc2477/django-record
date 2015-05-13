@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 from django.db.models.fields import Field
@@ -22,56 +23,76 @@ class TimeStampedModel(Model):
 
 class RecordModelMetaClass(ModelBase):
     def __init__(cls, name, bases, attrs):
-        # Ensure that monitored field registration is done only on
+        # Ensure that recording field registration is done only on
         # subclasses of RecordModel (not RecordModel itself).
         if name == 'RecordModel':
             return
 
-        monitored_model = attrs.get('recording_model')
-        monitored_fields = attrs.get('recording_fields')
+        recording_model = attrs.get('recording_model')
+        recording_fields = attrs.get('recording_fields')
 
         # Only subclasses of Django Models are recordable.
-        assert(issubclass(monitored_model, Model))
+        assert(issubclass(recording_model, Model))
 
-        # Register monitored and recorded fields to the subclass of a
+        # Register recording fields to the subclass of a
         # RecordModel and keep their names for later usage.
-        field_names = []
-        for field_entry in monitored_fields:
-            # monitored field given in a tuple format (properties allowed).
+        cls.recording_fields = []
+        for field_entry in recording_fields:
+            # recording field given in a tuple format (properties allowed).
             if isinstance(field_entry, tuple):
                 field_name, field = field_entry
 
                 assert(isinstance(field, Field))
                 field.contribute_to_class(cls, field_name)
 
-            # monitored field given in ordinary format (ordinary fields).
+            # recording field given in ordinary format (ordinary fields).
             else:
                 field_name = field_entry
 
-                field = deepcopy(monitored_model._meta.get_field(field_name))
+                field = deepcopy(recording_model._meta.get_field(field_name))
                 field.contribute_to_class(cls, field.name)
 
-            field_names.append(field_name)
+            cls.recording_fields.append(field_name)
 
-        # Register foreign key.
-        foreign_key = ForeignKey(monitored_model, related_name='records')
-        foreign_key.contribute_to_class(cls, )
+        # Register foreign key to the RecordModel.
+        foreign_key = ForeignKey(recording_model, related_name='records')
+        foreign_key.contribute_to_class(cls, 'monitoring')
+        foreign_key.contribute_to_related_class(cls, recording_model)
 
+        @receiver(post_save)
         def recorder(sender, **kwargs):
-            # Ensure that only models that are explicitly told to be
-            # are recorded.
-            if not sender == monitored_model:
+            # Ensure that only instances of models that are explicitly told
+            # to be audited are recorded.
+            if not sender == recording_model:
                 return
 
-            # NOT IMPLEMENTED YET
+            instance = kwargs['instance']
+            created = kwargs['instance']
 
-        post_save.connect(recorder)
+            if created or cls._model_instance_changed(instance):
+                # REFACTOR WITH DICT COMPREHENSION
+                ckwargs = {}
+                for name in cls.recording_fields:
+                    ckwargs[name] = getattr(instance, name)
+                cls.objects.create(ckwargs)
+
+    def _model_instance_changed(cls, instance):
+        # Consider a model instance has been changed if records doesn't exist.
+        if not instance.records.exists():
+            return True
+
+        # Compare fields of the instance with the latest record.
+        latest_record = instance.records.latest()
+        for name in cls.recording_fields:
+            if getattr(instance, name) != getattr(latest_record, name):
+                return True
+        return False
 
 
 class RecordModel(TimeStampedModel):
     __metaclass__ = RecordModelMetaClass
 
-    monitored_model = NotImplemented
+    recording_model = NotImplemented
 
     # List of model's fields or properties to be recorded.
     #
@@ -83,7 +104,7 @@ class RecordModel(TimeStampedModel):
     # ok to just simply put the field's name instead of a tuple.
     #
     # Example: [('full_name', CharField(max_length=100)), 'created_time', ...]
-    monitored_fields = NotImplemented
+    recording_fields = NotImplemented
 
     class Meta(TimeStampedModel.Meta):
         abstract = True
