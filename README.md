@@ -5,7 +5,7 @@
 `recording_model` at it's *post_save* time and create an record for it.
 
 You can access records via record manager `records` in your recorded model
-instance. Also, you are able to access audited model via `recording` in
+instance. Also, you are able to access audited model instance via `recording` in
 your records, which is in effect *ForeignKey*.
 
 **Attributes**:
