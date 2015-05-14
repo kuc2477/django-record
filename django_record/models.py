@@ -1,6 +1,5 @@
 from copy import deepcopy
 
-from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 from django.db.models.fields import Field
@@ -20,59 +19,60 @@ class TimeStampedModel(Model):
 
 
 class RecordModelMetaClass(ModelBase):
-    def __init__(cls, name, bases, attrs):
+    def __new__(cls, name, bases, attrs):
+        super_new = super(RecordModelMetaClass, cls).__new__
+
         # Ensure that recording field registration is done only on
         # subclasses of RecordModel (not RecordModel itself).
         if name == 'RecordModel':
-            return
+            return super_new(cls, name, bases, attrs)
 
         recording_model = attrs.get('recording_model')
-        recording_fields = attrs.get('recording_fields')
+        recording_fields = attrs.pop('recording_fields')
 
-        # Only subclasses of Django Models are recordable.
+        # Only django models are recordable.
         assert(issubclass(recording_model, Model))
 
         # Register recording fields to the subclass of a
         # RecordModel and keep their names for later usage.
-        cls.recording_fields = []
+        attrs['recording_fields'] = []
         for field_entry in recording_fields:
             # recording field given in a tuple format (properties allowed).
             if isinstance(field_entry, tuple):
                 field_name, field = field_entry
-
                 assert(isinstance(field, Field))
-                field.contribute_to_class(cls, field_name)
 
             # recording field given in ordinary format (ordinary fields).
             else:
                 field_name = field_entry
-
                 field = deepcopy(recording_model._meta.get_field(field_name))
-                field.contribute_to_class(cls, field.name)
 
-            cls.recording_fields.append(field_name)
+            attrs[field_name] = field
+            attrs['recording_fields'].append(field_name)
 
         # Register foreign key to the RecordModel.
-        foreign_key = ForeignKey(recording_model, related_name='records')
-        foreign_key.contribute_to_class(cls, 'recording')
-        foreign_key.contribute_to_related_class(cls, recording_model)
+        attrs['recording'] = ForeignKey(recording_model, related_name='records')
 
-        @receiver(post_save)
+        return super_new(cls, name, bases, attrs)
+
+    def __init__(cls, name, bases, attrs):
         def recorder(sender, **kwargs):
             # Ensure that only instances of models that are explicitly told
             # to be audited are recorded.
-            if not sender == recording_model:
+            if not sender == cls.recording_model:
                 return
 
             instance = kwargs['instance']
             created = kwargs['instance']
 
             if created or cls._model_instance_changed(instance):
-                cls.objects.create(
-                    recording=instance,
-                    {name: getattr(instance, name) for name in
-                     cls.recording_fields}
-                )
+                ckwargs = {name: getattr(instance, name) for name
+                           in cls.recording_fields}
+                ckwargs['recording'] = instance
+                cls.objects.create(**ckwargs)
+
+        # Connect recorder to the signal.
+        post_save.connect(recorder, weak=False)
 
     def _model_instance_changed(cls, instance):
         # Consider a model instance has been changed if records doesn't exist.
