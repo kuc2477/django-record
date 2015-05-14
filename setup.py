@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 long_description = (
     open('README.md').read() + '\n\n' +
     open('CHANGES.rst').read() + '\n\n' +
-    open('AUTHORS').read()
+    open('AUTHORS.rst').read()
 )
 
 MAJOR = 0
