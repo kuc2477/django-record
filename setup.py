@@ -3,15 +3,14 @@ from setuptools import setup, find_packages
 
 long_description = (
     open('README.md').read() + '\n\n' +
-    open('CHANGES.rst').read() + '\n\n' +
-    open('AUTHORS.rst').read()
+    open('CHANGES.rst').read()
 )
 
 MAJOR = 0
 MINOR = 1
-MICRO = 1
+MICRO = 2
 
-VERSION = '%d.%d.%d'.format(MAJOR, MINOR, MICRO)
+VERSION = '{}.{}.{}'.format(MAJOR, MINOR, MICRO)
 
 setup(
     name='django-record',
@@ -26,8 +25,10 @@ setup(
     install_requires=['django>=1.7'],
     tests_require=["django>=1.7", 'faker'],
     test_suite="runtests.runtests",
+    license='GPLv2',
+    platforms=['OS Independent', ],
     classifiers=[
-        'Development Status :: 0 - Alpha',
+        'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GPLv2 License',
