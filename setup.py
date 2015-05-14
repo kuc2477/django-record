@@ -3,7 +3,8 @@ from setuptools import setup, find_packages
 
 long_description = (
     open('README.md').read() + '\n\n' +
-    open('CHANGES.md').read()
+    open('CHANGES.rst').read() + '\n\n' +
+    open('AUTHORS').read()
 )
 
 MAJOR = 0
@@ -33,8 +34,6 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Framework :: Django',
     ]
 )
