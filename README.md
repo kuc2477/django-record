@@ -1,4 +1,4 @@
 # django-record
-Audits changes of other model to be recorded, providing RecordModel
+Automatically create records when an audited Django model instance has been changed
 
 **Note**: *Relational fields are currently not supported*
