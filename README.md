@@ -1,8 +1,6 @@
 # django-record
 <small>**Author**: Jun Soo Ha (<kuc2477@gmail.com>)</small>
 
----
-
 **Compatibility**:
 * __Python3 is currently not supported.__  
   
@@ -31,7 +29,7 @@ your records, which is in effect *ForeignKey*.
       tuples of property name and it's appropriate field.  
 
 **Example**:
-~~~
+~~~ python
     from django.db import models
     from django.contrib.auth.models import User
     from django_record.models import TimeStampedModel
