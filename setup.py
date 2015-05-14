@@ -22,7 +22,9 @@ setup(
     author_email='kuc2477@gmail.com',
     url='https://github.com/kuc2477/django-record/',
     pakcages=find_packages(),
-    install_requires=['Django>=1.7'],
+    install_requires=['django>=1.7'],
+    tests_require=["django>=1.7", 'faker'],
+    test_suite="runtests.runtests",
     classifiers=[
         'Development Status :: 0 - Alpha',
         'Environment :: Web Environment',
@@ -36,4 +38,3 @@ setup(
         'Framework :: Django',
     ]
 )
-

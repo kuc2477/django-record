@@ -17,8 +17,6 @@ class TimeStampedModel(Model):
 
     class Meta:
         abstract = True
-        ordering = ('created',)
-        get_latest_by = 'created'
 
 
 class RecordModelMetaClass(ModelBase):
@@ -56,7 +54,7 @@ class RecordModelMetaClass(ModelBase):
 
         # Register foreign key to the RecordModel.
         foreign_key = ForeignKey(recording_model, related_name='records')
-        foreign_key.contribute_to_class(cls, 'monitoring')
+        foreign_key.contribute_to_class(cls, 'recording')
         foreign_key.contribute_to_related_class(cls, recording_model)
 
         @receiver(post_save)
@@ -70,11 +68,11 @@ class RecordModelMetaClass(ModelBase):
             created = kwargs['instance']
 
             if created or cls._model_instance_changed(instance):
-                # REFACTOR WITH DICT COMPREHENSION
-                ckwargs = {}
-                for name in cls.recording_fields:
-                    ckwargs[name] = getattr(instance, name)
-                cls.objects.create(ckwargs)
+                cls.objects.create(
+                    recording=instance,
+                    {name: getattr(instance, name) for name in
+                     cls.recording_fields}
+                )
 
     def _model_instance_changed(cls, instance):
         # Consider a model instance has been changed if records doesn't exist.
@@ -108,3 +106,4 @@ class RecordModel(TimeStampedModel):
 
     class Meta(TimeStampedModel.Meta):
         abstract = True
+        get_latest_by = 'created'
