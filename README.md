@@ -1,5 +1,5 @@
-# django-record
-<small>Author: Jun Soo Ha (<kuc2477@gmail.com>)</small>
+# django-record:
+<small>Author: Jun Soo Ha (<kuc2477@gmail.com>)</small>  
 
 **Compatibility**:  
 * __Python3 is currently not supported.__
