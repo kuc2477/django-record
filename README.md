@@ -8,6 +8,15 @@ You can access records via record manager `records` in your recorded model
 instance. Also, you are able to access audited model instance via `recording` in
 your records, which is in effect *ForeignKey*.
 
+**Author**: Jun Soo Ha (<kuc2477@gmail.com>)
+
+**Compatibility**
+* __Python3 is currently not supported.__  
+
+**Dependencies**:
+* Requires [django](https://github.com/django/django) 1.7+
+* Requires [faker](https://github.com/joke2k/faker) for tests.
+
 **Attributes**:
 * `recording_model` (*class*): A model class to be audited and recorded.  
       Record will be created on every changed save() calls of it's  
