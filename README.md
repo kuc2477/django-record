@@ -1,8 +1,7 @@
 # django-record
 <small>**Author**: Jun Soo Ha (<kuc2477@gmail.com>)</small>
 
-**Compatibility**:
-* __Python3 is currently not supported.__  
+**Compatibility**: __Python3 is currently not supported.__
   
 **Dependencies**:
 * Requires [django](https://github.com/django/django) 1.7+
