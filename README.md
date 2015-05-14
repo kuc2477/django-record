@@ -1,14 +1,7 @@
 # django-record
 <small>**Author**: Jun Soo Ha (<kuc2477@gmail.com>)</small>
 
-*Automatically create records when an audited Django model instance has been changed.*
-
-`RecordModel` will detect any changes of `recording_fields` in
-`recording_model` at it's *post_save* time and create an record for it.
-
-You can access records via record manager `records` in your recorded model
-instance. Also, you are able to access audited model instance via `recording` in
-your records, which is in effect *ForeignKey*.
+---
 
 **Compatibility**:
 * __Python3 is currently not supported.__  
@@ -16,6 +9,19 @@ your records, which is in effect *ForeignKey*.
 **Dependencies**:
 * Requires [django](https://github.com/django/django) 1.7+
 * Requires [faker](https://github.com/joke2k/faker) for tests.  
+
+---
+
+*Automatically create records when an audited Django model instance has been changed.*
+
+`RecordModel` will detect any changes of `recording_fields` in
+`recording_model` at it's *post_save* time and create an record for it.  
+
+You can access records via record manager `records` in your recorded model
+instance. Also, you are able to access audited model instance via `recording` in
+your records, which is in effect *ForeignKey*.
+
+---
 
 **Attributes**:
 * `recording_model` (*class*): A model class to be audited and recorded.  
@@ -71,9 +77,9 @@ your records, which is in effect *ForeignKey*.
 **Note**
 :
 * __Relational fields(e.g. *ForeignKey*, *ManyToManyField*, ...) are not__ 
-      __currently supported.__  
-* __Only *primitive types* are supported for properties__ and you must  
-      offer appropriate field for them when you put a tuple of a property  
-      name and it's field in `recording_fields` for expected recording.  
-* `RecordModel` is also a subclass of `TimeStampedModel`, __so make sure that__  
-      __you don't record fields with either name of *created* or *modified*.__
+    __currently supported.__  
+* __Only *primitive types* are supported for properties__ and you must offer
+    appropriate field for them when you put a tuple of a property
+    name and it's field in `recording_fields` for expected recording.  
+* `RecordModel` is also a subclass of `TimeStampedModel`, __so make sure that__
+    __you don't record fields with either name of *created* or *modified*.__
