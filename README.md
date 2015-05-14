@@ -1,4 +1,7 @@
-# django-record
+# django-record:
+<small>**Author**: Jun Soo Ha (<kuc2477@gmail.com>)</small>  
+<br>
+
 *Automatically create records when an audited Django model instance has been changed*
 
 `RecordModel` will detect any changes of `recording_fields` in
@@ -7,23 +10,24 @@
 You can access records via record manager `records` in your recorded model
 instance. Also, you are able to access audited model instance via `recording` in
 your records, which is in effect *ForeignKey*.
+<br>
 
-**Author**: Jun Soo Ha (<kuc2477@gmail.com>)
-
-**Compatibility**
+**Compatibility**:
 * __Python3 is currently not supported.__  
-
+<br>
+  
 **Dependencies**:
 * Requires [django](https://github.com/django/django) 1.7+
-* Requires [faker](https://github.com/joke2k/faker) for tests.
+* Requires [faker](https://github.com/joke2k/faker) for tests.  
+<br>
 
 **Attributes**:
 * `recording_model` (*class*): A model class to be audited and recorded.  
       Record will be created on every changed save() calls of it's  
-      instance.
-
+      instance.  
 * `recording_fields` (*list*): A List of to-be-recoreded field names or  
-      tuples of property name and it's appropriate field.
+      tuples of property name and it's appropriate field.  
+<br>
 
 **Example**:
 ~~~
@@ -67,16 +71,16 @@ your records, which is in effect *ForeignKey*.
     .
     >>> records_before_yesterday = d.records.filter(created__lte=yesterday)
     >>> records_of_today = d.records.filter(created__gte=today)
-~~~
+~~~  
+<br>
 
 **Note**
 :
 * __Relational fields(e.g. *ForeignKey*, *ManyToManyField*, ...) are not__ 
-      __currently supported.__
-
+      __currently supported.__  
 * __Only *primitive types* are supported for properties__ and you must  
       offer appropriate field for them when you put a tuple of a property  
       name and it's field in `recording_fields` for expected recording.  
-
 * `RecordModel` is also a subclass of `TimeStampedModel`, __so make sure that__  
-      __you don't record fields with either name of *created* or *modified*.__
+      __you don't record fields with either name of *created* or *modified*.__  
+<br>
