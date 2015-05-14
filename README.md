@@ -8,7 +8,7 @@ You can access records via record manager 'records' in your recorded model
 instance. Also, you are able to access audited model via 'recording' in
 your records, which is in effect ForeignKey.
 
-**Attributes**:
+**Attributes**:  
     * recording_model (class): A model class to be audited and recorded.  
         Record will be created on every changed save() calls of it's  
         instance.  
@@ -16,7 +16,7 @@ your records, which is in effect ForeignKey.
         tuples of property name and it's appropriate field.
 
 **Example**:  
-    ~~~
+    ~~~  
     from django.db import models
     from django.contrib.auth.models import User
     from django_record.models import TimeStampedModel
@@ -59,7 +59,7 @@ your records, which is in effect ForeignKey.
     >>> records_of_today = d.records.filter(created__gte=today)
     ~~~
 
-**Note**:
+**Note**:  
     * Relational fields(e.g. ForeignKey, ManyToManyField, ...) are not  
         currently supported.
     * Only primitive types are supported for properties and you must  
