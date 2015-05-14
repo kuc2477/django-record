@@ -7,7 +7,7 @@ long_description = (
 )
 
 MAJOR = 0
-MINOR = 0
+MINOR = 1
 MICRO = 1
 
 VERSION = '%d.%d.%d'.format(MAJOR, MINOR, MICRO)
