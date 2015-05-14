@@ -7,8 +7,6 @@
 * Requires [django](https://github.com/django/django) 1.7+
 * Requires [faker](https://github.com/joke2k/faker) for tests.  
 
----
-
 *Automatically create records when an audited Django model instance has been changed.*
 
 `RecordModel` will detect any changes of `recording_fields` in
