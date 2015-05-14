@@ -1,11 +1,15 @@
 # django-record
-<small>**Author**: Jun Soo Ha (<kuc2477@gmail.com>)</small>
+<small>Author: Jun Soo Ha (<kuc2477@gmail.com>)</small>
 
-**Compatibility**: __Python3 is currently not supported.__
+**Compatibility**:  
+* __Python3 is currently not supported.__
   
 **Dependencies**:
 * Requires [django](https://github.com/django/django) 1.7+
-* Requires [faker](https://github.com/joke2k/faker) for tests.  
+* Requires [faker](https://github.com/joke2k/faker) for tests.
+
+**Installation**:  
+* `pip install django-record`
 
 *Automatically create records when an audited Django model instance has been changed.*
 
