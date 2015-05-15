@@ -2,14 +2,14 @@
 django-record
 *************
 ``django-record`` automatically creates an extra record when an audited 
-  Django model instance has been changed.
+Django model instance has been changed.
 
 ``RecordModel`` will detect any changes of ``recording_fields`` in
 ``recording_model`` at it's *post_save* time and create an record for it.  
 
 You can access records via record manager ``records`` in your recorded model
 instance. Also, you are able to access audited model instance via ``recording`` in
-your records, which is in effect `ForeignKey`.
+your records, which is in effect ``ForeignKey``.
 
 Author
 ======
@@ -49,7 +49,6 @@ Example
     from django_record.models import TimeStampedModel
     from django_record.models import RecordModel
     
-    
     class Debate(models.Model):
         user = models.ForeignKey(User)
     
@@ -68,7 +67,6 @@ Example
         @property
         def user_name(self):
             return user.username
-    
     
     class DebateRecord(RecordModel):
         recording_model = Debate
