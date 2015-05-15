@@ -43,7 +43,7 @@ Attributes
 
 Example
 =======
-::
+.. code-block:: python
     from django.db import models
     from django.contrib.auth.models import User
     from django_record.models import TimeStampedModel
