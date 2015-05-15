@@ -24,7 +24,7 @@ Compatibility
 Dependencies
 ============
 * ``django-record`` supports `django <https://github.com/django/django>`_ (>= 1.7) or later.
-* Requires `faker <https://github.com/joke2k/faker>`_.
+* Requires `faker <https://github.com/joke2k/faker>`_ for tests.
 
 Installation
 ============
