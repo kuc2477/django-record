@@ -30,13 +30,13 @@ Installation
 
 Attributes
 ==========
-    * ``recording_model`` (*class*): A model class to be recorded. An extra record
+    * **``recording_model``** (*class*): A model class to be recorded. An extra record
       will be created on every changed ``save()`` calls of it's instance or
       auditing relative's ``save()`` calls.
-    * ``recording_fields`` (*list*): A List consists of either to-be-recoreded field
+    * **``recording_fields``** (*list*): A List consists of either to-be-recoreded field
       names or tuples of a property name and it's field instance to
       be saved in database.
-    * ``auditing_relatives`` (*list*): A List of audited relatives. An extra record
+    * **``auditing_relatives``** (*list*): A List of audited relatives. An extra record
       will be created on every ``save()`` calls of relative instances that
       affects recording instance, along with recording on recording-
       instance-changing ``save()`` calls.
@@ -44,6 +44,7 @@ Attributes
 Example
 =======
 .. code-block:: python
+
     from django.db import models
     from django.contrib.auth.models import User
     from django_record.models import TimeStampedModel
