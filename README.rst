@@ -50,6 +50,7 @@ Example
     from django_record.models import TimeStampedModel
     from django_record.models import RecordModel
     
+    
     class Debate(models.Model):
         user = models.ForeignKey(User)
     
@@ -69,6 +70,7 @@ Example
         def user_name(self):
             return user.username
     
+    
     class DebateRecord(RecordModel):
         recording_model = Debate
         recording_fields = [
@@ -80,25 +82,30 @@ Example
     
         auditing_relatives = ['user', ]
     
+    
     >>> d =  Debate.objects.first()
     >>> r =  d.records.latest()
     >>> assert(d.title == r.title)
     >>> assert(d.pros_rate == r.pros_rate)
+    
     ...
+    
     >>> records_before_yesterday = d.records.filter(created__lte=yesterday)
     >>> records_of_today = d.records.filter(created__gte=today)
+    
     ...
+    
     >>> u = d.user
     >>> u.username = 'changed user name'
     >>> u.save()
     >>> r = d.records.latest()
     >>> assert(d.user_name == r.user_name)
-    >> assert(d.user.username == r.user_name)
+    >>> assert(d.user.username == r.user_name)
 
 Note
 ====
-* **Only primitive types are supported for properties** and you must
-  offer appropriate field for them when you put a tuple of a property
+* **Only primitive types are supported for properties** and **you must
+  offer appropriate field** for them when you put a tuple of a property
   name and it's field in 'recording_fields' for expected recording.
 * RecordModel is also a subclass of TimeStampedModel, so **make sure that
   you don't record either 'created' or 'modified' fields.**
