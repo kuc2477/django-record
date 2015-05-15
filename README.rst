@@ -109,5 +109,5 @@ Note
 * **Only primitive types are supported for properties** and **you must
   offer appropriate field** for them when you put a tuple of a property
   name and it's field in 'recording_fields' for expected recording.
-* RecordModel is also a subclass of TimeStampedModel, so **make sure that
+* RecordModel is also a subclass of ``TimeStampedModel``, so **make sure that
   you don't record either 'created' or 'modified' fields.**
