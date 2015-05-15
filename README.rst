@@ -1,6 +1,15 @@
 *************
 django-record
 *************
+``django-record`` automatically creates an extra record when an audited 
+  Django model instance has been changed.*
+
+``RecordModel`` will detect any changes of ``recording_fields`` in
+``recording_model`` at it's *post_save* time and create an record for it.  
+
+You can access records via record manager ``records`` in your recorded model
+instance. Also, you are able to access audited model instance via ``recording`` in
+your records, which is in effect `ForeignKey`.
 
 Author
 ======
@@ -17,37 +26,26 @@ Dependencies
 
 Installation
 ============
-::
-    `pip install django-record`
-
-* ``django-record`` automatically creates an extra record when an audited 
-  Django model instance has been changed.*
-
-``RecordModel`` will detect any changes of ``recording_fields`` in
-``recording_model`` at it's *post_save* time and create an record for it.  
-
-You can access records via record manager ``records`` in your recorded model
-instance. Also, you are able to access audited model instance via ``recording`` in
-your records, which is in effect `ForeignKey`.
+``pip install django-record``
 
 Attributes
 ==========
     * ``recording_model`` (*class*): A model class to be recorded. An extra record
-      will be created on every changed save() calls of it's instance or
-      auditing relative's save() calls.
+      will be created on every changed ``save()`` calls of it's instance or
+      auditing relative's ``save()`` calls.
     
-    * ``recording_fields`` (list): A List consists of either to-be-recoreded field
+    * ``recording_fields`` (*list*): A List consists of either to-be-recoreded field
       names or tuples of a property name and it's field instance to
       be saved in database.
     
-    * ``auditing_relatives`` (list): A List of audited relatives. An extra record
-      will be created on every save() calls of relative instances that
+    * ``auditing_relatives`` (*list*): A List of audited relatives. An extra record
+      will be created on every ``save()`` calls of relative instances that
       affects recording instance, along with recording on recording-
-      instance-changing save() calls.
+      instance-changing ``save()`` calls.
 
 Example
 =======
-::
+.. code:: python
     from django.db import models
     from django.contrib.auth.models import User
     from django_record.models import TimeStampedModel
@@ -85,7 +83,6 @@ Example
     
         auditing_relatives = ['user', ]
     
-    ...
     >>> d =  Debate.objects.first()
     >>> r =  d.records.latest()
     >>> assert(d.title == r.title)
@@ -103,9 +100,9 @@ Example
 
 Note
 ====
-* Only primitive types are supported for properties and you must
+* **Only primitive types are supported for properties** and you must
   offer appropriate field for them when you put a tuple of a property
   name and it's field in 'recording_fields' for expected recording.
 
-* RecordModel is also a subclass of TimeStampedModel, so make sure that
-  you don't record fields with either name 'created' or 'modified'.
+* RecordModel is also a subclass of TimeStampedModel, so **make sure that
+  you don't record either 'created' or 'modified' fields.**
