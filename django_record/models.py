@@ -83,6 +83,11 @@ class RecordModelMetaClass(ModelBase):
                 ckwargs['recording'] = instance
                 cls.objects.create(**ckwargs)
 
+        # TODO: Implement related instance monitoring recorder and register on
+        #       post_save signals from those models.
+        def relational_recorder(sender, **kwargs):
+            pass
+
         # Connect recorder to the signal.
         post_save.connect(recorder, weak=False)
 
@@ -169,6 +174,7 @@ class RecordModel(TimeStampedModel):
         RecordModel is also a subclass of TimeStampedModel, so make sure that
             you don't record fields with either name 'created' or 'modified'.
     """
+    # TODO: Python3 compatibility issue - use six module.
     __metaclass__ = RecordModelMetaClass
 
     recording_model = NotImplemented
@@ -179,12 +185,32 @@ class RecordModel(TimeStampedModel):
     # model field to record the model's property rather than ordinary model
     # field.
     #
-    # If you want to monitor on ordinary django model field, then it's
-    # ok to just simply put the field's name instead of a tuple.
+    # If you want to monitor on ordinary django model field, then it's perfectly
+    # ok to just simply put the field's name instead of the tuple.
     #
-    # Example: [('full_name', CharField(max_length=100)), 'created_time', ...]
+    # Example: recording_fields = [
+    #                                 'first_name', 'last_name',
+    #                                 ('liquidity', IntegerField()),
+    #                                 ('liquidity_ratio', FloatField()),
+    #                                 ('full_name', CharField(max_length=100))
+    #                             ]
     recording_fields = NotImplemented
+
+    # List of relatives to be audited for changes.
+    #
+    # You can audit relatives(foreign key or related instances) for their
+    # changes to record their indirect effects on `recording_fields`.
+    #
+    # Example: auditing_relatives = [
+    #                                   'father', 'mother',
+    #                                   'interested_funds',
+    #                                   'subscribed_funds',
+    #                               ]
+    auditing_relatives = []
 
     class Meta(TimeStampedModel.Meta):
         abstract = True
         get_latest_by = 'created'
+
+    class RecordMeta:
+        audit_all_relatives = False
