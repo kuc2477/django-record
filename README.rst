@@ -1,11 +1,13 @@
 *************
 django-record
 *************
+    
 ``django-record`` automatically creates an extra record when an audited 
-Django model instance has been changed.
+Django model instance has been changed either directly or indirectly.
 
 ``RecordModel`` will detect any changes of ``recording_fields`` in
-``recording_model`` at it's *post_save* time and create an record for it.  
+``recording_model`` at it's post save() time or auditing relative's
+post save() time and create an new record for it. 
 
 You can access records via record manager ``records`` in your recorded model
 instance. Also, you are able to access audited model instance via ``recording`` in
