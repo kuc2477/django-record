@@ -21,7 +21,7 @@ class TimeStampedModel(Model):
 class RecordModelMetaClass(ModelBase):
     def __new__(cls, name, bases, attrs):
         """
-        Generates RecordModel subclass.
+        Generates a  RecordModel subclass.
 
         """
         super_new = super(RecordModelMetaClass, cls).__new__
@@ -64,8 +64,8 @@ class RecordModelMetaClass(ModelBase):
 
     def __init__(cls, name, bases, attrs):
         """
-        Register a recorder with post_save signal for the generated RecordModel
-        subclass.
+        Register recorders on the post_save signal for the generated record
+        model.
 
         """
         def recorder(sender, **kwargs):
@@ -85,11 +85,13 @@ class RecordModelMetaClass(ModelBase):
 
         # TODO: Implement related instance monitoring recorder and register on
         #       post_save signals from those models.
-        def relational_recorder(sender, **kwargs):
+        def relative_auditing_recorder(sender, **kwargs):
+            # NOT IMPLEMENTED YET
             pass
 
-        # Connect recorder to the signal.
+        # Connect recorders to the signal.
         post_save.connect(recorder, weak=False)
+        post_save.connect(relative_auditing_recorder, weak=False)
 
     def _model_instance_changed(cls, instance):
         # Consider a model instance has been changed if records doesn't exist.
@@ -107,21 +109,27 @@ class RecordModelMetaClass(ModelBase):
 class RecordModel(TimeStampedModel):
     """
     Automatically create records when an audited Django model instance has been
-    changed.
+    changed either directly or indirectly.
 
     RecordModel will detect any changes of 'recording_fields' in
-    'recording_model' at it's post save() time and create an record for it.
+    'recording_model' at it's post save() time or auditing relative's
+    post ave() time and create an new record for it.
 
     You can access records via record manager 'records' in your recorded model
     instance. Also, you are able to access audited model via 'recording' in
     your records, which is in effect ForeignKey.
 
     Attributes:
-        recording_model (class): A model class to be audited and recorded.
-            Record will be created on every changed save() calls of it's
-            instance.
-        recording_fields (list): A List of to-be-recoreded field names or
-            tuples of property name and it's appropriate field.
+        recording_model (class): A model class to be recorded. An extra record
+            will be created on every changed save() calls of it's instance or
+            auditing relative's save() calls.
+        recording_fields (list): A List consists of either to-be-recoreded field
+            names or tuples of a property name and it's field instance to
+            be saved in database.
+        auditing_relatives (list): A List of audited relatives. An extra record
+            will be created on every save() calls of relative instances that
+            affects recording instance, along with recording on recording-
+            instance-changing save() calls.
 
     Example:
         from django.db import models
@@ -145,29 +153,39 @@ class RecordModel(TimeStampedModel):
             def cons_rate(self):
                 return self.num_of_cons // (self.num_of_pros + self.num_of_cons)
 
+            @property
+            def user_name(self):
+                return user.username
+
 
         class DebateRecord(RecordModel):
             recording_model = Debate
             recording_fields = [
                 'title', 'num_of_pros', 'num_of_cons'
                 ('pros_rate', models.FloatField()),
-                ('cons_rate', models.FloatField())
+                ('cons_rate', models.FloatField()),
+                ('user_name', models.CharField(max_length=100))
             ]
 
-        .
-        .
+            auditing_relatives = ['user', ]
+
+        ...
         >>> d =  Debate.objects.first()
         >>> r =  d.records.latest()
         >>> assert(d.title == r.title)
         >>> assert(d.pros_rate == r.pros_rate)
-        .
-        .
+        ...
         >>> records_before_yesterday = d.records.filter(created__lte=yesterday)
         >>> records_of_today = d.records.filter(created__gte=today)
+        ...
+        >>> u = d.user
+        >>> u.username = 'changed user name'
+        >>> u.save()
+        >>> r = d.records.latest()
+        >>> assert(d.user_name == r.user_name)
+        >> assert(d.user.username == r.user_name)
 
     Note:
-        Relational fields(e.g. ForeignKey, ManyToManyField, ...) are not
-            currently supported.
         Only primitive types are supported for properties and you must
             offer appropriate field for them when you put a tuple of a property
             name and it's field in 'recording_fields' for expected recording.
