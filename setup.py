@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 long_description = (
-    open('README.md').read() + '\n\n' +
+    open('README.rst').read() + '\n\n' +
     open('CHANGES.rst').read()
 )
 
