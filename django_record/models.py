@@ -1,8 +1,8 @@
 from copy import deepcopy
 
 from django.db import models
-from django.db.models.signal import class_prepared
 from django.db.models.signals import post_save
+from django.db.models.signals import class_prepared
 
 from django.db.models.fields import Field
 from django.db.models.base import ModelBase
@@ -62,118 +62,6 @@ class RecordModelMetaClass(ModelBase):
         )
 
         return super_new(cls, name, bases, attrs)
-
-    def register_record_meta(cls):
-        """
-        Registers RecordMeta for the generated record model itself.
-
-        """
-        # Audit all relative fields if `RecordMeta`'s `audit_all_relatives` flag
-        # is True.
-        if cls.RecordMeta.audit_all_relatives:
-            cls.auditing_relatives = [
-                name for name in cls._meta.get_all_field_names() if
-                getattr(cls, name).__module__ ==
-                'django.db.models.fields.related'
-            ]
-
-    def register_recorders(cls, name, bases, attrs):
-        """
-        Registers recorders for the generated record model.
-
-        """
-        def recorder(sender, created, instance, **kwargs):
-            # Ensure that the recorder audits and records only instances of the
-            # `recording model`.
-            if not sender == cls.recording_model:
-                return
-
-            if created or cls._recording_instance_changed(instance):
-                cls.record(instance)
-
-        def indirect_effect_recorder(sender, instance, **kwargs):
-            # Ensure that only instances of relative models are audited and
-            # have indirect effect on recording.
-            if not sender in cls.relative_models:
-                return
-
-            # Get `recording_model` instances from the relative.
-            instances = cls._get_recording_instances(instance)
-
-            for instance in instances:
-                if cls._recording_instance_changed(instance):
-                    cls.record(instance)
-
-        # Connect recorders to the signal.
-        post_save.connect(recorder, weak=False)
-        post_save.connect(indirect_effect_recorder, weak=False)
-
-    def record(cls, instance):
-        """
-        Records an given instance.
-
-        """
-        ckwargs = {name: getattr(instance, name) for name in
-                   cls.recording_fields}
-        ckwargs['recording'] = instance
-        cls.objects.create(**ckwargs)
-
-
-    def identify_related_models(cls):
-        """
-        Identify all related models of the RecordModel subclass and register
-        them as a set of models on the RecordModel subclass.
-
-        """
-        # Models of relatives defined from outside of the recorded model.
-        foreign_relative_models = set([
-            getattr(cls, name).related.model for name in cls.auditing_relatives
-            if hasattr(getattr(cls, name), 'related') and not
-            # Except RecordModel subclasses from auditing list.
-            issubclass(getattr(cls, name).related.model, RecordModel)
-        ])
-
-        # Models of relatives defined inside of the recorded model.
-        local_relative_models = set([
-            getattr(cls, name).field.get_path_info()[0].to_opts.model for
-            name in cls.auditing_relatives
-            if hasattr(getattr(cls, name), 'field')
-        ])
-
-        cls.relative_models = foreign_relative_models | local_relative_models
-
-    def _recording_instance_changed(cls, instance):
-        # Consider a model instance has been changed if records doesn't exist.
-        if not instance.records.exists():
-            return True
-
-        # Compare fields of the instance with the latest record.
-        latest_record = instance.records.latest()
-        for name in cls.recording_fields:
-            if getattr(instance, name) != getattr(latest_record, name):
-                return True
-        return False
-
-    def _get_recording_instances_in_relative(cls, relative):
-        recording_instances = []
-
-        for field in [getattr(relative, name) for name
-                      in relative._meta.get_all_field_names()]:
-            # If a field of a relative is an instance of the recording model,
-            # it's an recording instance.
-            if isinstance(field, cls.recording_model):
-                recording_instances.append(field)
-
-            # If a module attribute of a relative's field is 'django.db.models.
-            # fields.related' and it's model attribute is recording model class,
-            # it's an related manager or many related manager of recording
-            # instances.
-            elif field.__module__ == 'django.db.models.fields.related' and \
-                field.model == cls.recording_model:
-                recording_instances.append(field.all())
-
-        return recording_instances
-
 
 
 class RecordModel(TimeStampedModel):
@@ -296,9 +184,192 @@ class RecordModel(TimeStampedModel):
     #                               ]
     auditing_relatives = []
 
+    class RecordMeta:
+        # All relatives will be audited by default.
+        #
+        # Note that turning this flag on can cause potential
+        # performance issue in large scale database.
+        audit_all_relatives = False
+
     class Meta(TimeStampedModel.Meta):
         abstract = True
+
+        # Latest Records will be retrieved by `latest()` filter.
         get_latest_by = 'created'
 
-    class RecordMeta:
-        audit_all_relatives = False
+    # ====================================
+    # Methods fore Recorder Implementation
+    # ====================================
+
+    @classmethod
+    def record(cls, instance):
+        """
+        Records an given instance of the `recording_model`.
+
+        """
+        ckwargs = {name: getattr(instance, name) for name in
+                   cls.recording_fields}
+        ckwargs['recording'] = instance
+        cls.objects.create(**ckwargs)
+
+    @classmethod
+    def recording_instance_changed(cls, instance):
+        """
+        Check whether if any of `recording_fields` of the recording instance has
+        been changed.
+
+        """
+        # Consider a model instance has been changed if records doesn't exist.
+        if not instance.records.exists():
+            return True
+
+        latest_record = instance.records.latest()
+
+        # Compare fields of the instance with the latest record.
+        for name in cls.recording_fields:
+            if getattr(instance, name) != getattr(latest_record, name):
+                return True
+
+        return False
+
+    # TODO: Can be potential performance bottleneck, implement in other ways
+    #       rather than in a method.
+    @classmethod
+    def get_relative_models_to_audit(cls):
+        """
+        Returns a set of all models of `recording_relatives`.
+
+        """
+        meta = cls.recording_model._meta
+
+        # Audit all relatives if RecordMeta's audit_all_relatives flag is
+        # True.
+        if cls.RecordMeta.audit_all_relatives:
+            cls.auditing_relatives = [
+                name for name in meta.get_all_field_names() if
+                'related' in meta.get_field_by_name(name)[0].__module__
+            ]
+
+        relative_models = set()
+
+        for name in cls.auditing_relatives:
+            field = meta.get_field_by_name(name)[0]
+
+            try:
+                # Related models.
+                model = field.get_path_info()[0].to_opts.model
+
+            except AttributeError:
+                # Reverse related models.
+                model = field.get_reverse_path_info()[0].from_opts.model
+
+            if not model == cls:
+                relative_models.add(model)
+
+        return relative_models
+
+    @classmethod
+    def get_related_recording_instances(cls, relative):
+        """
+        Get related instances of the `recording_model` from a relative.
+
+        """
+        recording_instances = []
+
+        # Links to related objects.
+        related_links = [rel.get_accessor_name() for rel in
+                         relative._meta.get_all_related_objects()]
+
+        # Links to many to many related objects.
+        many_to_many_links = [rel.get_accessor_name() for rel in
+                     relative._meta.get_all_related_many_to_many_objects()]
+
+        for link in related_links + many_to_many_links:
+            try:
+                instances = getattr(relative, link).all()
+                if instances.model == cls.recording_model:
+                    recording_instances.extend(instances)
+
+            except AttributeError:
+                instance = getattr(relative, link)
+                recording_instances.append(instance)
+
+        return recording_instances
+
+    @classmethod
+    def get_reverse_related_recording_instances(cls, relative):
+        """
+        Get reverse related instances of the `recording_model` from a relative.
+
+        """
+        recording_instances = []
+
+        for field in relative._meta.fields:
+            if (hasattr(field, 'get_path_info') and
+                field.get_path_info()[0].to_opts.model == cls.recording_model):
+                try:
+                    instances = getattr(relative, field.name).all()
+                    recording_instances.extend(instances)
+
+                except AttributeError:
+                    instance = getattr(relative, field.name)
+                    recording_instances.append(instance)
+
+        return recording_instances
+
+    # =======================
+    # Recorder Implementation
+    # =======================
+
+    @classmethod
+    def _register_recorder(cls):
+        """
+        Registers a recorder.
+
+        """
+        def recorder(sender, created, instance, **kwargs):
+            # Ensure that the recorder audits and records only instances of the
+            # `recording model`.
+            if not sender == cls.recording_model:
+                return
+
+            if created or cls.recording_instance_changed(instance):
+                cls.record(instance)
+
+        post_save.connect(recorder, weak=False)
+
+    @classmethod
+    def _register_indirect_effect_recorder(cls):
+        """
+        Registers an indirect effect recorder.
+
+        """
+        def indirect_effect_recorder(sender, instance, **kwargs):
+            # Ensure that only instances of relative models are audited and
+            # have indirect effect on recording.
+            if not sender in cls.get_relative_models_to_audit():
+                return
+
+            # Get `recording_model` instances from the relative.
+            instances = \
+                cls.get_related_recording_instances(instance) + \
+                cls.get_reverse_related_recording_instances(instance)
+
+            for instance in instances:
+                if cls.recording_instance_changed(instance):
+                    cls.record(instance)
+
+        post_save.connect(indirect_effect_recorder, weak=False)
+
+
+# Registers recorders for RecordModel subclasses on their `class_prepared`
+# signals.
+def register_recorders(sender, **kwargs):
+    base_names = [base.__name__ for base in sender.__bases__]
+    # Since the model has not been fully registered, we use 'RecordModel' rather
+    # than `issubclass` function.
+    if 'RecordModel' in base_names:
+        sender._register_recorder()
+        sender._register_indirect_effect_recorder()
+
+class_prepared.connect(register_recorders)

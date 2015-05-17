@@ -6,7 +6,7 @@ django-record
 Django model instance has been changed either directly or indirectly.
 
 ``RecordModel`` will detect any changes of ``recording_fields`` in
-``recording_model`` at it's post save() time or auditing relative's
+``recording_model`` at it's post save() time or ``auditing_relatives``'s
 post save() time and create an new record for it. 
 
 You can access records via record manager ``records`` in your recorded model
@@ -35,13 +35,15 @@ Attributes
     * ``recording_model`` (*class*): A model class to be recorded. An extra record
       will be created on every changed ``save()`` calls of it's instance or
       auditing relative's ``save()`` calls.
+
     * ``recording_fields`` (*list*): A List consists of either to-be-recoreded field
       names or tuples of a property name and it's field instance to
       be saved in database.
+
     * ``auditing_relatives`` (*list*): A List of audited relatives. An extra record
-      will be created on every ``save()`` calls of relative instances that
-      affects recording instance, along with recording on recording-
-      instance-changing ``save()`` calls.
+      will be created on every ``save()`` calls of these relative instances that indirectly
+      affects the recording instance, along with recording on direct ``save()`` calls from
+      ``recording_model`` instances.
 
 Example
 =======
@@ -85,12 +87,14 @@ Example
         auditing_relatives = ['user', ]
 
         # Uncomment this meta class if you want to audit
-        # all relative instances for monitoring their indirect
-        # effects on our ``recording_model``
+        # all relative instances to monitor their indirect
+        # effects on our ``recording_model``.
         """
         class RecordMeta:
             audit_all_relatives = True
         """
+        # Note that settings this attribute as True can cause
+        # performance issue in large scale database.
     
     
     >>> d =  Debate.objects.first()
@@ -117,5 +121,6 @@ Note
 * **Only primitive types are supported for properties** and **you must
   offer appropriate field** for them when you put a tuple of a property
   name and it's field in 'recording_fields' for expected recording.
+
 * ``RecordModel`` is also a subclass of ``TimeStampedModel``, so **make sure that
   you don't record either 'created' or 'modified' fields.**
