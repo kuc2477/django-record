@@ -5,7 +5,7 @@ django-record
 ``django-record`` automatically creates an extra record when an audited 
 Django model instance has been changed either directly or indirectly.
 
-``RecordModel`` will detect any changes of ``recording_fields`` in
+``RecordModel`` will detect any changes in ``recording_fields`` of
 ``recording_model`` at it's post save() time or ``auditing_relatives``'s
 post save() time and create an new record for it. 
 
@@ -50,41 +50,50 @@ Example
 .. code-block:: python
 
     from django.db import models
-    from django.contrib.auth.models import User
+    from django.db.models import Sum
+    
     from django_record.models import TimeStampedModel
     from django_record.models import RecordModel
     
     
-    class Debate(models.Model):
-        user = models.ForeignKey(User)
-    
+    class Article(TimeStampedModel):
+        author = models.ForeignKey(User, related_name='articles')
         title = models.CharField(max_length=100)
-        num_of_pros = models.IntegerField()
-        num_of_cons = models.IntegerField()
-    
+        
         @property
-        def pros_rate(self):
-            return self.num_of_pros // (self.num_of_pros + self.num_of_cons)
-    
+        def total_comment_count(self):
+            return self.comments.count()
+        
         @property
-        def cons_rate(self):
-            return self.num_of_cons // (self.num_of_pros + self.num_of_cons)
-    
+        def total_score(self):
+            return 0 if not self.votes.exists() else \
+            int(self.votes.aggregate(Sum('score'))['score__sum'])
+            
         @property
-        def user_name(self):
-            return user.username
+        def full_name_of_author(self):
+            return self.author.username
     
     
-    class DebateRecord(RecordModel):
-        recording_model = Debate
+    class Comment(TimeStampedModel):
+        article = models.ForeignKey(Article, related_name='comments')
+        text = models.TextField()
+    
+    
+    class Vote(models.Model):
+        article = models.ForeignKey(Article, related_name='votes')
+        score = models.IntegerField()
+    
+    
+    class ArticleRecord(RecordModel):
+        recording_model = Article
         recording_fields = [
-            'title', 'num_of_pros', 'num_of_cons'
-            ('pros_rate', models.FloatField()),
-            ('cons_rate', models.FloatField()),
-            ('user_name', models.CharField(max_length=100))
+            'title',
+            ('full_name_of_author', models.CharField(max_length=50)),
+            ('total_comment_count', models.IntegerField()),
+            ('total_score', models.IntegerField())
         ]
     
-        auditing_relatives = ['user', ]
+        auditing_relatives = ['user', 'comments', 'votes']
 
         # Uncomment this meta class if you want to audit
         # all relative instances to monitor their indirect
@@ -93,28 +102,29 @@ Example
         class RecordMeta:
             audit_all_relatives = True
         """
-        # Note that settings this attribute as True can cause
+        # Note that setting this attribute as True can cause
         # performance issue in large scale database.
     
     
-    >>> d =  Debate.objects.first()
-    >>> r =  d.records.latest()
-    >>> assert(d.title == r.title)
-    >>> assert(d.pros_rate == r.pros_rate)
+    >>> a =  Article.objects.first()
+    >>> a.votes.first().score = 999             # recorder creates a new record, updating 'total_score'.
+    >>> r =  a.records.latest()
+    >>> assert(a.total_score == r.total_score)
     
     ...
     
-    >>> records_before_yesterday = d.records.filter(created__lte=yesterday)
+    >>> count_before = a.total_comment_count
+    >>> Comment.objects.create(article=a, text='text of comment')   # recorder creates a new record, updating 
+    >>> r = a.records.latest()                                      # 'total_comment_count'.
+    >>> r.total_comment_count == count_before + 1
+    >>> True
+    
+    ...
+    
+    >>> records_before_yesterday = d.records.filter(created__lte=yesterday)     # you can filter records by time
     >>> records_of_today = d.records.filter(created__gte=today)
     
     ...
-    
-    >>> u = d.user
-    >>> u.username = 'changed user name'
-    >>> u.save()
-    >>> r = d.records.latest()
-    >>> assert(d.user_name == r.user_name)
-    >>> assert(d.user.username == r.user_name)
 
 Note
 ====
