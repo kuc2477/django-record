@@ -29,7 +29,7 @@ class ModelTest(TestCase):
     def test_record_on_creation(self):
         self.assertTrue(CommentRecord.objects.exists())
 
-    def test_unchanged_save(self):
+    def test_unchanged_save_recording(self):
         comment = Comment.objects.first()
 
         number_of_records_before_save = comment.records.count()
@@ -39,7 +39,7 @@ class ModelTest(TestCase):
             number_of_records_before_save, comment.records.count()
         )
 
-    def test_changed_save(self):
+    def test_changed_save_recording(self):
         comment = Comment.objects.first()
 
         number_of_records_before_save = comment.records.count()
@@ -50,3 +50,19 @@ class ModelTest(TestCase):
             number_of_records_before_save + 1, comment.records.count()
         )
         self.assertEqual(comment.text, comment.records.latest().text)
+
+    def test_indirect_effect_recording(self):
+        comment = Comment.objects.first()
+        article = comment.article
+
+        number_of_records_before_save = comment.records.count()
+        article.title = 'changed text'
+        article.save()
+
+        self.assertEqual(
+            number_of_records_before_save + 1, comment.records.count()
+        )
+        self.assertEqual(
+            comment.article.title,
+            comment.records.latest().related_property
+        )

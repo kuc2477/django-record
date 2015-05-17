@@ -33,6 +33,9 @@ class Comment(TimeStampedModel):
     def float_property(self):
         return self.impact + self.impact_rate
 
+    @property
+    def related_property(self):
+        return self.article.title
 
 class CommentRecord(RecordModel):
     recording_model = Comment
@@ -42,5 +45,6 @@ class CommentRecord(RecordModel):
         # Properties.
         ('string_property', models.CharField(max_length=1000)),
         ('integer_property', models.IntegerField()),
-        ('float_property', models.FloatField())
+        ('float_property', models.FloatField()),
+        ('related_property', models.CharField(max_length=1000))
     ]

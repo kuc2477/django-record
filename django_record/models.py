@@ -1,18 +1,17 @@
 from copy import deepcopy
 
+from django.db import models
+from django.db.models.signal import class_prepared
 from django.db.models.signals import post_save
 
 from django.db.models.fields import Field
 from django.db.models.base import ModelBase
 from django.db.models import Model
 
-from django.db.models import ForeignKey
-from django.db.models import DateTimeField
-
 
 class TimeStampedModel(Model):
-    created = DateTimeField(auto_now=True)
-    modified = DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         abstract = True
@@ -21,7 +20,7 @@ class TimeStampedModel(Model):
 class RecordModelMetaClass(ModelBase):
     def __new__(cls, name, bases, attrs):
         """
-        Generates a  RecordModel subclass.
+        Generates a RecordModel subclass.
 
         """
         super_new = super(RecordModelMetaClass, cls).__new__
@@ -58,42 +57,92 @@ class RecordModelMetaClass(ModelBase):
             attrs['recording_fields'].append(field_name)
 
         # Register foreign key to the RecordModel.
-        attrs['recording'] = ForeignKey(recording_model, related_name='records')
+        attrs['recording'] = models.ForeignKey(
+            recording_model, related_name='records'
+        )
 
         return super_new(cls, name, bases, attrs)
 
-    def __init__(cls, name, bases, attrs):
+    def register_record_meta(cls):
         """
-        Register recorders on the post_save signal for the generated record
-        model.
+        Registers RecordMeta for the generated record model itself.
 
         """
-        def recorder(sender, **kwargs):
-            # Ensure that only instances of models that are explicitly told
-            # to be audited are recorded.
+        # Audit all relative fields if `RecordMeta`'s `audit_all_relatives` flag
+        # is True.
+        if cls.RecordMeta.audit_all_relatives:
+            cls.auditing_relatives = [
+                name for name in cls._meta.get_all_field_names() if
+                getattr(cls, name).__module__ ==
+                'django.db.models.fields.related'
+            ]
+
+    def register_recorders(cls, name, bases, attrs):
+        """
+        Registers recorders for the generated record model.
+
+        """
+        def recorder(sender, created, instance, **kwargs):
+            # Ensure that the recorder audits and records only instances of the
+            # `recording model`.
             if not sender == cls.recording_model:
                 return
 
-            instance = kwargs['instance']
-            created = kwargs['created']
+            if created or cls._recording_instance_changed(instance):
+                cls.record(instance)
 
-            if created or cls._model_instance_changed(instance):
-                ckwargs = {name: getattr(instance, name) for name
-                           in cls.recording_fields}
-                ckwargs['recording'] = instance
-                cls.objects.create(**ckwargs)
+        def indirect_effect_recorder(sender, instance, **kwargs):
+            # Ensure that only instances of relative models are audited and
+            # have indirect effect on recording.
+            if not sender in cls.relative_models:
+                return
 
-        # TODO: Implement related instance monitoring recorder and register on
-        #       post_save signals from those models.
-        def relative_auditing_recorder(sender, **kwargs):
-            # NOT IMPLEMENTED YET
-            pass
+            # Get `recording_model` instances from the relative.
+            instances = cls._get_recording_instances(instance)
+
+            for instance in instances:
+                if cls._recording_instance_changed(instance):
+                    cls.record(instance)
 
         # Connect recorders to the signal.
         post_save.connect(recorder, weak=False)
-        post_save.connect(relative_auditing_recorder, weak=False)
+        post_save.connect(indirect_effect_recorder, weak=False)
 
-    def _model_instance_changed(cls, instance):
+    def record(cls, instance):
+        """
+        Records an given instance.
+
+        """
+        ckwargs = {name: getattr(instance, name) for name in
+                   cls.recording_fields}
+        ckwargs['recording'] = instance
+        cls.objects.create(**ckwargs)
+
+
+    def identify_related_models(cls):
+        """
+        Identify all related models of the RecordModel subclass and register
+        them as a set of models on the RecordModel subclass.
+
+        """
+        # Models of relatives defined from outside of the recorded model.
+        foreign_relative_models = set([
+            getattr(cls, name).related.model for name in cls.auditing_relatives
+            if hasattr(getattr(cls, name), 'related') and not
+            # Except RecordModel subclasses from auditing list.
+            issubclass(getattr(cls, name).related.model, RecordModel)
+        ])
+
+        # Models of relatives defined inside of the recorded model.
+        local_relative_models = set([
+            getattr(cls, name).field.get_path_info()[0].to_opts.model for
+            name in cls.auditing_relatives
+            if hasattr(getattr(cls, name), 'field')
+        ])
+
+        cls.relative_models = foreign_relative_models | local_relative_models
+
+    def _recording_instance_changed(cls, instance):
         # Consider a model instance has been changed if records doesn't exist.
         if not instance.records.exists():
             return True
@@ -104,6 +153,27 @@ class RecordModelMetaClass(ModelBase):
             if getattr(instance, name) != getattr(latest_record, name):
                 return True
         return False
+
+    def _get_recording_instances_in_relative(cls, relative):
+        recording_instances = []
+
+        for field in [getattr(relative, name) for name
+                      in relative._meta.get_all_field_names()]:
+            # If a field of a relative is an instance of the recording model,
+            # it's an recording instance.
+            if isinstance(field, cls.recording_model):
+                recording_instances.append(field)
+
+            # If a module attribute of a relative's field is 'django.db.models.
+            # fields.related' and it's model attribute is recording model class,
+            # it's an related manager or many related manager of recording
+            # instances.
+            elif field.__module__ == 'django.db.models.fields.related' and \
+                field.model == cls.recording_model:
+                recording_instances.append(field.all())
+
+        return recording_instances
+
 
 
 class RecordModel(TimeStampedModel):
