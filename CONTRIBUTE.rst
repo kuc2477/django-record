@@ -22,5 +22,7 @@ Thank you for considering to contribute to ``django-record``.
 .. _`AUTHORS.rst`: https://github.com/kuc2477/django-record/blob/master/AUTHORS.rst
 
 
-Above document referenced original CONTRIBUTE.rst of `django-pandas`_.
-.. _`django-pandas: https://github.com/chrisdev/django-pandas`
+This document referenced CONTRIBUTE.rst_ of django-pandas_.
+
+.. _`CONTRIBUTE.rst`: https://github.com/chrisdev/django-pandas/blob/master/CONTRIBUTING.rst
+.. _`django-pandas`: https://github.com/chrisdev/django-pandas
