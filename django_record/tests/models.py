@@ -4,6 +4,8 @@ from django.db.models import Sum
 from django_record.models import TimeStampedModel
 from django_record.models import RecordModel
 
+from django_record.mixins import RecordedModelMixin
+
 
 TITLE_MAX_LENGTH = 100
 POINT_MAX_LENGTH = 100
@@ -43,9 +45,24 @@ class Comment(TimeStampedModel):
         return self.article.title
 
 
-class Vote(models.Model):
+class Vote(RecordedModelMixin, models.Model):
     comment = models.ForeignKey(Comment, related_name='votes')
     score = models.IntegerField()
+
+    @property
+    def integer_property(self):
+        return self.score
+
+    @property
+    def reverse_related_property(self):
+        return self.comment.point + self.comment.text
+
+    recording_fields = [
+        'score',
+        ('integer_property', models.IntegerField()),
+        ('reverse_related_property', models.CharField(max_length=1000)),
+    ]
+    auditing_relatives = ['comment']
 
 
 class CommentRecord(RecordModel):

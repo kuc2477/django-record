@@ -30,11 +30,11 @@ class ModelTest(TestCase):
         )
 
     def tearDown(self):
-        Comment.objects.all().delete()
         Article.objects.all().delete()
 
     def test_record_on_creation(self):
-        self.assertTrue(CommentRecord.objects.exists())
+        comment = Comment.objects.first()
+        self.assertTrue(comment.records.exists())
 
     def test_changed_save_recording(self):
         comment = Comment.objects.first()
