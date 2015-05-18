@@ -33,6 +33,7 @@ Compatibility
 Dependencies
 ============
 * ``django-record`` supports `django <https://github.com/django/django>`_ (>= 1.7) or later.
+* Requires `unipath <https://github.com/mikeorr/Unipath >`_ for tests.
 * Requires `faker <https://github.com/joke2k/faker>`_ for tests.
 
 

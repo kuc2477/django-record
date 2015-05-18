@@ -23,7 +23,7 @@ setup(
     url='https://github.com/kuc2477/django-record/',
     pakcages=find_packages(),
     install_requires=['django'],
-    tests_require=["django", 'faker'],
+    tests_require=["django", 'unipath', 'faker'],
     test_suite="runtests.runtests",
     license='GNU General Public License v2 (GPLv2)',
     platforms=['OS Independent', ],
