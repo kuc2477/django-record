@@ -1,6 +1,8 @@
 *************
 django-record
 *************
+.. image:: https://pypip.in/py_versions/django-record/badge.svg
+   :target: https://pypi.python.org/pypi/django-record/
 .. image:: https://secure.travis-ci.org/kuc2477/django-record.png?branch=master
    :target: http://travis-ci.org/kuc2477/django-record
 .. image:: https://coveralls.io/repos/kuc2477/django-record/badge.svg?branch=master
@@ -10,10 +12,6 @@ django-record
 .. image:: https://pypip.in/download/django-record/badge.svg
    :target: https://pypi.python.org/pypi/django-record/
    :alt: Latest Version
-.. image:: https://pypip.in/py_versions/django-record/badge.svg
-   :target: https://pypi.python.org/pypi/django-record/
-.. image:: https://pypip.in/license/django-record/badge.svg
-   :target: https://pypi.python.org/pypi/django-record/
 
     
 ``django-record`` automatically creates an extra record when an audited 
@@ -274,7 +272,7 @@ Usage
 
 
 Note
-====
+^^^^
 * **Only primitive types are supported for properties** and **you must
   offer appropriate field** for them when you put a tuple of a property
   name and it's field in 'recording_fields' for expected recording.
