@@ -10,8 +10,8 @@ Django model instance has been changed either directly or indirectly.
 post save() time and create an new record for it. 
 
 You can access records via record manager ``records`` in your recorded model
-instance. Also, you are able to access audited model instance via ``recording`` in
-your records, which is in effect ``ForeignKey``.
+instance. You can also access recorded model's instance via ``recording``, 
+which is in effect ``ForeignKey``. from your records.
 
 More conveniently, just mixin ``RecordedModelMixin`` to your model and provide 
 ``recording_fields`` and ``auditing_relatives`` as ``RecordModel`` to record 
