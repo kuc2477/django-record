@@ -1,4 +1,4 @@
-Django-pandas is written and maintained by Jun Soo Ha.
+**django-record** is written and maintained by Jun Soo Ha.
 
 Development Lead
 ````````````````
