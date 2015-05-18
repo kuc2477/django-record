@@ -39,6 +39,11 @@ Installation
 ``pip install django-record``
 
 
+Continuous Integration(Travis CI <https://travis-ci.com/>)
+==============================
+https://secure.travis-ci.org/kuc2477/django-record.png
+
+
 Mixins
 ======
 ``django-record`` provides mixins which auto-registers ``RecordModel`` for your mixed in
