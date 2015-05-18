@@ -203,7 +203,7 @@ TimeStampedModel.
             score = models.IntegerField()
         
     
-        # Record Models
+        # Record Model
     
         class ArticleRecord(RecordModel):
             recording_model = Article
@@ -213,18 +213,9 @@ TimeStampedModel.
                 ('total_comment_count', models.IntegerField()),
                 ('total_score', models.IntegerField())
             ]
-        
-            auditing_relatives = ['user', 'comments', 'votes']
-    
-            # Uncomment this meta class if you want to audit
-            # all relative instances to monitor their indirect
-            # effects on our ``recording_model``.
-            """
+            
             class RecordMeta:
-                audit_all_relatives = True
-            """
-            # Note that setting this attribute as True can cause
-            # performance issue in large scale database.
+               auditing_all_relatives = True
     
     
         class CommentRecord(RecordModel):
@@ -242,6 +233,65 @@ TimeStampedModel.
 Usage
 =====
 .. code-block:: python
+
+        from django.db import models
+        from django.db.models import Sum
+        
+        from django_record.models import TimeStampedModel
+        from django_record.models import RecordModel
+    
+    
+        # Models
+        
+        class Article(RecordedModelMixin, TimeStampedModel):
+            author = models.ForeignKey(User, related_name='articles')
+            title = models.CharField(max_length=100)
+            
+            @property
+            def total_comment_count(self):
+                return self.comments.count()
+            
+            @property
+            def total_score(self):
+                return 0 if not self.votes.exists() else \
+                int(self.votes.aggregate(Sum('score'))['score__sum'])
+                
+            @property
+            def full_name_of_author(self):
+                return self.author.username
+                
+            recording_fields = [
+                'title',
+                ('full_name_of_author', models.CharField(max_length=50)),
+                ('total_comment_count', models.IntegerField()),
+                ('total_score', models.IntegerField()),
+            ]
+            auditing_relatives = [
+               'user', 'comments', 'votes'
+            ]
+        
+        
+        class Comment(RecordedModelMixin, TimeStampedModel):
+            article = models.ForeignKey(Article, related_name='comments')
+            text = models.TextField()
+    
+            @property
+            def title_of_article_with_prefix(self):
+                return 'title: ' + self.article.title
+                
+            recording_fields = [
+               'article',
+               ('title_of_article_with_prefix', models.CharField(100)),
+            ]
+            auditing_relatives = [
+               'article',
+            ]
+    
+        
+        class Vote(models.Model):
+            article = models.ForeignKey(Article, related_name='votes')
+            score = models.IntegerField()
+
     
     >>> a =  Article.objects.first()
     >>> v = a.votes.first()
