@@ -189,7 +189,7 @@ TimeStampedModel.
                 return self.author.username
         
         
-        class Comment(RecordedModelMixin, TimeStampedModel):
+        class Comment(TimeStampedModel):
             article = models.ForeignKey(Article, related_name='comments')
             text = models.TextField()
     
