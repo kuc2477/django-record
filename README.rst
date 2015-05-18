@@ -5,6 +5,8 @@ django-record
    :target: http://travis-ci.org/kuc2477/django-record
 .. image:: https://coveralls.io/repos/kuc2477/django-record/badge.svg?branch=master
    :target: https://coveralls.io/r/kuc2477/django-record?branch=master
+.. image:: https://badge.fury.io/py/django-record.svg
+   :target: http://badge.fury.io/py/django-record
 .. image:: https://pypip.in/download/django-record/badge.svg
    :target: https://pypi.python.org/pypi/django-record/
    :alt: Latest Version
@@ -12,9 +14,6 @@ django-record
    :target: https://pypi.python.org/pypi/django-record/
 .. image:: https://pypip.in/license/django-record/badge.svg
    :target: https://pypi.python.org/pypi/django-record/
-.. image:: https://badge.fury.io/py/django-record.svg
-   :target: http://badge.fury.io/py/django-record
-
 
     
 ``django-record`` automatically creates an extra record when an audited 
