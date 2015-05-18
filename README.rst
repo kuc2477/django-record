@@ -1,6 +1,8 @@
 *************
 django-record
 *************
+.. image:: https://secure.travis-ci.org/kuc2477/django-record.png?branch=master
+   :target: http://travis-ci.org/kuc2477/django-record
     
 ``django-record`` automatically creates an extra record when an audited 
 Django model instance has been changed either directly or indirectly.
@@ -37,12 +39,6 @@ Dependencies
 Installation
 ============
 ``pip install django-record``
-
-
-Continuous Integration(Travis CI <https://travis-ci.com/>)
-==============================
-.. image:: https://secure.travis-ci.org/kuc2477/django-record.png?branch=master
-   :target: http://travis-ci.org/kuc2477/django-record
 
 
 Mixins
