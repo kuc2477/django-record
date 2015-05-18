@@ -41,7 +41,8 @@ Installation
 
 Continuous Integration(Travis CI <https://travis-ci.com/>)
 ==============================
-https://secure.travis-ci.org/kuc2477/django-record.png
+.. image:: https://secure.travis-ci.org/kuc2477/djang-record.png?branch=master
+.. image:: https://coveralls.io/repos/chrisdev/django-pandas/badge.png?branch=master
 
 
 Mixins
