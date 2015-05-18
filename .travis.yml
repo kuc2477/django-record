@@ -10,4 +10,4 @@ script:
     - coverage run --source=django_record setup.py test
 
 after_success:
-    coveralls
+    - coveralls
