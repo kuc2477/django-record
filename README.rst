@@ -106,8 +106,9 @@ model to help your model instance recording.
                 ('total_score', models.IntegerField()),
                 ('full_name_of_author', models.CharField(max_length=100))
             ]
-    
-            auditing_relatives = ['author']
+            
+            class RecordMeta:
+               audit_all_relatives = True
     
         
         class Comment(RecordedModelMixin, TimeStampedModel):
