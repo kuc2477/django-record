@@ -12,11 +12,17 @@ class RecordedModelMixin(object):
         audit_all_relatives = False
 
 
+# =============================================================
+# Listen for RecordedModelMixin mixed-in class prepared signals
+# =============================================================
+
+# Registers record model for `RecordedModelMixin` mixed-in model on thier
+# `class_prepared` signals
 def register_record_model(sender, **kwargs):
     # Ensure that we register a record model only if the prepared class is
     # properly mixed-in class of RecordedModelMixin.
     if (issubclass(sender, Model) and
-        issubclass(sender, RecordedModelMixin) and \
+        issubclass(sender, RecordedModelMixin) and
         # If the prepared model already has records, we don't
         # register new record model for the model.
         not hasattr(sender, 'records')):
