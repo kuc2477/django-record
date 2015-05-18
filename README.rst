@@ -41,7 +41,7 @@ Installation
 
 Mixins
 ======
-Provides mixins which auto-registers RecordModel for your mixed in
+``django-record`` rovides mixins which auto-registers RecordModel for your mixed in
 model to help your model instance recording.
 
 * *RecordedModelMixin*
@@ -122,7 +122,7 @@ model to help your model instance recording.
 
 Models
 ======
-Provides models for recording model instances, including RecordModel and
+``django-record`` provides models for recording model instances, including RecordModel and
 TimeStampedModel.
 
 * *RecordModel*
