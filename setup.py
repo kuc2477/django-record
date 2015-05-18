@@ -8,7 +8,7 @@ long_description = (
 
 MAJOR = 0
 MINOR = 1
-MICRO = 5
+MICRO = 6
 
 VERSION = '{}.{}.{}'.format(MAJOR, MINOR, MICRO)
 
