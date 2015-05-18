@@ -10,7 +10,7 @@ MAJOR = 0
 MINOR = 1
 MICRO = 6
 
-VERSION = '{}.{}.{}'.format(MAJOR, MINOR, MICRO)
+VERSION = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
 
 setup(
     name='django-record',
