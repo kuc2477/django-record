@@ -12,6 +12,8 @@ django-record
    :target: https://pypi.python.org/pypi/django-record/
 .. image:: https://pypip.in/license/django-record/badge.svg
    :target: https://pypi.python.org/pypi/django-record/
+.. image:: https://badge.fury.io/py/django-record.svg
+   :target: http://badge.fury.io/py/django-record
 
 
     
