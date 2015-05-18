@@ -5,6 +5,13 @@ django-record
    :target: http://travis-ci.org/kuc2477/django-record
 .. image:: https://coveralls.io/repos/kuc2477/django-record/badge.svg?branch=master
    :target: https://coveralls.io/r/kuc2477/django-record?branch=master
+.. image:: https://pypip.in/download/django-record/badge.svg
+   :target: https://pypi.python.org/pypi/django-record/
+   :alt: Latest Version
+.. image:: https://pypip.in/py_versions/django-record/badge.svg
+   :target: https://pypi.python.org/pypi/django-record/
+.. image:: https://pypip.in/license/django-record/badge.svg
+   :target: https://pypi.python.org/pypi/django-record/
 
 
     
