@@ -12,8 +12,14 @@ POINT_MAX_LENGTH = 100
 TEXT_MAX_LENGTH = 300
 
 
-class Article(TimeStampedModel):
+class Article(RecordedModelMixin, TimeStampedModel):
     title = models.CharField(max_length=TITLE_MAX_LENGTH)
+
+    @property
+    def comment_count(self):
+        return self.comments.count()
+
+    recording_fields = [('comment_count', models.IntegerField())]
 
 
 class Comment(TimeStampedModel):

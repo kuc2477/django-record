@@ -4,7 +4,7 @@ from random import randint, uniform
 from faker import Faker
 
 from .models import TITLE_MAX_LENGTH, POINT_MAX_LENGTH, TEXT_MAX_LENGTH
-from .models import Article, Comment, Vote, CommentRecord
+from .models import Article, Comment, Vote
 
 
 f = Faker()
@@ -24,9 +24,9 @@ class ModelTest(TestCase):
             impact_rate=uniform(0, 1)
         )
 
-        vote = Vote.objects.create(
+        Vote.objects.create(
             comment=comment,
-            score = randint(0, 10)
+            score=randint(0, 10)
         )
 
     def tearDown(self):

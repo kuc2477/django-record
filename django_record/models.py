@@ -185,7 +185,7 @@ class RecordModel(TimeStampedModel):
     #                                 ('liquidity_ratio', FloatField()),
     #                                 ('full_name', CharField(max_length=100))
     #                             ]
-    recording_fields = NotImplemented
+    recording_fields = []
 
     # List of relatives to be audited for changes.
     #
@@ -371,9 +371,9 @@ def _register_indirect_effect_recorder(cls):
             cls.get_related_recording_instances(relative) + \
             cls.get_reverse_related_recording_instances(relative)
 
-        for instance in recording_instances:
-            if cls.recording_instance_changed(instance):
-                cls.record(instance)
+        for recording in recording_instances:
+            if cls.recording_instance_changed(recording):
+                cls.record(recording)
 
     post_save.connect(indirect_effect_recorder, weak=False)
 
