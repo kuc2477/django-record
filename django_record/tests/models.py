@@ -19,6 +19,7 @@ class Article(RecordedModelMixin, TimeStampedModel):
     def comment_count(self):
         return self.comments.count()
 
+    auditing_relatives = ['comments']
     recording_fields = [('comment_count', models.IntegerField())]
 
 
@@ -51,6 +52,23 @@ class Comment(TimeStampedModel):
         return self.article.title
 
 
+class CommentRecord(RecordModel):
+    recording_model = Comment
+    recording_fields = [
+        # Ordinary django fields.
+        'point', 'text', 'impact', 'impact_rate',
+        # Properties.
+        ('string_property', models.CharField(max_length=1000)),
+        ('integer_property', models.IntegerField()),
+        ('float_property', models.FloatField()),
+        ('related_property', models.IntegerField()),
+        ('reverse_related_property', models.CharField(max_length=1000))
+    ]
+
+    class RecordMeta:
+        audit_all_relatives = True
+
+
 class Vote(RecordedModelMixin, models.Model):
     comment = models.ForeignKey(Comment, related_name='votes')
     score = models.IntegerField()
@@ -69,20 +87,3 @@ class Vote(RecordedModelMixin, models.Model):
         ('reverse_related_property', models.CharField(max_length=1000)),
     ]
     auditing_relatives = ['comment']
-
-
-class CommentRecord(RecordModel):
-    recording_model = Comment
-    recording_fields = [
-        # Ordinary django fields.
-        'point', 'text', 'impact', 'impact_rate',
-        # Properties.
-        ('string_property', models.CharField(max_length=1000)),
-        ('integer_property', models.IntegerField()),
-        ('float_property', models.FloatField()),
-        ('related_property', models.IntegerField()),
-        ('reverse_related_property', models.CharField(max_length=1000))
-    ]
-
-    class RecordMeta:
-        audit_all_relatives = True
