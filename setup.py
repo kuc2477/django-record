@@ -21,7 +21,6 @@ setup(
     author='Jun Soo Ha',
     author_email='kuc2477@gmail.com',
     url='https://github.com/kuc2477/django-record/',
-    packages=find_packages(),
     install_requires=['django'],
     tests_require=["django", 'unipath', 'faker'],
     test_suite="runtests.runtests",
