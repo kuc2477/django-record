@@ -10,6 +10,9 @@ django-record
 .. image:: https://img.shields.io/pypi/dm/django-record.svg
    :target: https://img.shields.io/pypi/django-record
    :alt: Latest Version
+.. image:: https://img.shields.io/pypi/l/django-record.svg
+   :target: https://img.shields.io/pypi/django-record
+   
 
     
 ``django-record`` automatically creates an extra record when an audited 
