@@ -26,7 +26,7 @@ Compatibility
 
 Dependencies
 ============
-* ``django-record`` supports `django <https://github.com/django/django>`_ (>= 1.7) or later.
+* *django-record* supports `django <https://github.com/django/django>`_ (>= 1.7) or later.
 * Requires `unipath <https://github.com/mikeorr/Unipath>`_ and `faker <https://github.com/joke2k/faker>`_ for tests.
 
 
@@ -39,16 +39,16 @@ Rationale
 =========
 Often there are situations where you want to record your properties of your models and
 where you want to track their changes. Although that recording process can be implemented
-by hand-crafted, ad-hoc **signals** or overriding **save()** methods of your models, it's
+by `handcrafted, ad-hoc signals`_ or `overriding save() methods`_ of your models, it's
 not a generic way, and it'll messup your code base.
 
-``django-record`` automatically creates an snapshot-like extra record when an audited 
+*django-record* automatically creates an snapshot-like extra record when an audited 
 Django model instance has been changed either directly or indirectly, in elegant way,
 without messing up your model code base.
 
 ``RecordModel`` will detect any changes in ``recording_fields`` of
-``recording_model`` at it's post save() time or ``auditing_relatives``'s
-post save() time and create an new record for it. 
+``recording_model`` at it's ``post_save`` time or ``auditing_relatives``'s
+``post_save`` time and create an new record for it. 
 
 You can access records via record manager ``records`` in your recorded model
 instance. You can also access recorded model's instance via ``recording``, 
@@ -57,6 +57,9 @@ which is in effect ``ForeignKey``. from your records.
 More conveniently, just mixin ``RecordedModelMixin`` to your model and provide 
 ``recording_fields`` and ``auditing_relatives`` as ``RecordModel`` to record 
 specific model.
+
+.. _`handcrafted, ad-hoc signals`: https://djangosnippets.org/snippets/500/
+.. _`overriding save() methods`: https://trickveda.wordpress.com/2014/01/22/overriding-save-method-in-django-models/
 
 
 Mixins
