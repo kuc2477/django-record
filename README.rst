@@ -1,6 +1,9 @@
 *************
 django-record
 *************
+.. image:: https://img.shields.io/pypi/l/django-record.svg
+   :target: https://img.shields.io/pypi/django-record
+   
 .. image:: https://secure.travis-ci.org/kuc2477/django-record.png?branch=master
    :target: http://travis-ci.org/kuc2477/django-record
 .. image:: https://coveralls.io/repos/kuc2477/django-record/badge.svg?branch=master
@@ -10,12 +13,8 @@ django-record
 .. image:: https://img.shields.io/pypi/dm/django-record.svg
    :target: https://img.shields.io/pypi/django-record
    :alt: Latest Version
-.. image:: https://img.shields.io/pypi/l/django-record.svg
-   :target: https://img.shields.io/pypi/django-record
-   
-
     
-``django-record`` automatically creates an extra record when an audited 
+``django-record`` automatically creates an snapshot-like extra record when an audited 
 Django model instance has been changed either directly or indirectly.
 
 ``RecordModel`` will detect any changes in ``recording_fields`` of
