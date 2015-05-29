@@ -39,12 +39,12 @@ Rationale
 =========
 Often there are situations where you want to record your properties of your models and
 where you want to track their changes. Although that recording process can be implemented
-by `handcrafted, ad-hoc signals`_ or `overriding save() methods`_ of your models, it's
-not a generic way, and it'll messup your code base.
+by `handcrafted, ad-hoc signals`_ or `overriding save() methods of your models`_, it's
+not a generic way, and **it'll eventually mess up your code base**.
 
-*django-record* automatically creates an snapshot-like extra record when an audited 
-Django model instance has been changed either directly or indirectly, in elegant way,
-without messing up your model code base.
+*django-record* **automatically creates an snapshot-like extra record** when an audited 
+Django model instance has been changed **either directly or indirectly**,
+without messing up your code base.
 
 ``RecordModel`` will detect any changes in ``recording_fields`` of
 ``recording_model`` at it's ``post_save`` time or ``auditing_relatives``'s
@@ -59,7 +59,7 @@ More conveniently, just mixin ``RecordedModelMixin`` to your model and provide
 specific model.
 
 .. _`handcrafted, ad-hoc signals`: https://djangosnippets.org/snippets/500/
-.. _`overriding save() methods`: https://trickveda.wordpress.com/2014/01/22/overriding-save-method-in-django-models/
+.. _`overriding save() methods of your models`: https://trickveda.wordpress.com/2014/01/22/overriding-save-method-in-django-models/
 
 
 Mixins
