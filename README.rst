@@ -12,21 +12,6 @@ django-record
 .. image:: https://img.shields.io/pypi/dm/django-record.svg
    :target: https://img.shields.io/pypi/django-record
    :alt: Latest Version
-    
-``django-record`` automatically creates an snapshot-like extra record when an audited 
-Django model instance has been changed either directly or indirectly.
-
-``RecordModel`` will detect any changes in ``recording_fields`` of
-``recording_model`` at it's post save() time or ``auditing_relatives``'s
-post save() time and create an new record for it. 
-
-You can access records via record manager ``records`` in your recorded model
-instance. You can also access recorded model's instance via ``recording``, 
-which is in effect ``ForeignKey``. from your records.
-
-More conveniently, just mixin ``RecordedModelMixin`` to your model and provide 
-``recording_fields`` and ``auditing_relatives`` as ``RecordModel`` to record 
-specific model.
 
 
 Author
@@ -48,6 +33,30 @@ Dependencies
 Installation
 ============
 ``pip install django-record``
+
+
+Rationale
+=========
+Often there are situations where you want to record your properties of your models and
+where you want to track their changes. Although that recording process can be implemented
+by hand-crafted, ad-hoc **signals** or overriding **save()** methods of your models, it's
+not a generic way, and it'll messup your code base.
+
+``django-record`` automatically creates an snapshot-like extra record when an audited 
+Django model instance has been changed either directly or indirectly, in elegant way,
+without messing up your model code base.
+
+``RecordModel`` will detect any changes in ``recording_fields`` of
+``recording_model`` at it's post save() time or ``auditing_relatives``'s
+post save() time and create an new record for it. 
+
+You can access records via record manager ``records`` in your recorded model
+instance. You can also access recorded model's instance via ``recording``, 
+which is in effect ``ForeignKey``. from your records.
+
+More conveniently, just mixin ``RecordedModelMixin`` to your model and provide 
+``recording_fields`` and ``auditing_relatives`` as ``RecordModel`` to record 
+specific model.
 
 
 Mixins
