@@ -1,16 +1,14 @@
 *************
 django-record
 *************
-.. image:: https://pypip.in/py_versions/django-record/badge.svg
-   :target: https://pypi.python.org/pypi/django-record/
 .. image:: https://secure.travis-ci.org/kuc2477/django-record.png?branch=master
    :target: http://travis-ci.org/kuc2477/django-record
 .. image:: https://coveralls.io/repos/kuc2477/django-record/badge.svg?branch=master
    :target: https://coveralls.io/r/kuc2477/django-record?branch=master
-.. image:: https://badge.fury.io/py/django-record.svg
-   :target: http://badge.fury.io/py/django-record
-.. image:: https://pypip.in/download/django-record/badge.svg
-   :target: https://pypi.python.org/pypi/django-record/
+.. image:: https://img.shields.io/pypi/v/django-record.svg
+   :target: https://img.shields.io/pypi/django-record
+.. image:: https://img.shields.io/pypi/dm/django-record.svg
+   :target: https://img.shields.io/pypi/django-record
    :alt: Latest Version
 
     
