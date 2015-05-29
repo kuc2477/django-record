@@ -241,6 +241,13 @@ TimeStampedModel.
     
 
 
+Note
+====
+* **Only primitive types are supported for properties.** You must offer appropriate django field for them.
+* ``RecordModel`` is also a subclass of ``TimeStampedModel``, so make sure that
+  you don't record either 'created' or 'modified' fields.
+
+
 Usage
 =====
 .. code-block:: python
@@ -330,10 +337,3 @@ Usage
     >>> records_of_today = d.records.filter(created__gte=today)
     
     ...
-
-
-Note
-^^^^
-* **Only primitive types are supported for properties.** **You must offer appropriate field** for them.
-* ``RecordModel`` is also a subclass of ``TimeStampedModel``, so **make sure that
-  you don't record either 'created' or 'modified' fields.**
