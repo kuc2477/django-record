@@ -31,7 +31,7 @@ specific model.
 
 Author
 ======
-* `Jun Soo Ha <kuc2477@gmail.com>`_
+* `Ha Junsoo <kuc2477@gmail.com>`_
 
 
 Compatibility
