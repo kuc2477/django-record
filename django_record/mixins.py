@@ -5,6 +5,7 @@ from .models import RecordModel
 
 
 class RecordedModelMixin(object):
+    """ Registers record model for the mixed in model automatically """
     recording_fields = []
     auditing_relatives = []
 

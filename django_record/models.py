@@ -8,6 +8,8 @@ from django.db.models.fields import Field
 from django.db.models.base import ModelBase
 from django.db.models import Model
 
+import monkey
+
 
 class TimeStampedModel(Model):
     created = models.DateTimeField(auto_now=True)
@@ -61,7 +63,18 @@ class RecordModelMetaClass(ModelBase):
             recording_model, related_name='records'
         )
 
+        # Monkey-patch recording model with shortcut properties.
+        cls.monkey_patch(recording_model)
+
+        # Generate RecordModel subclass
         return super_new(cls, name, bases, attrs)
+
+    @staticmethod
+    def monkey_patch(recording_model):
+        for name, prop in [
+            (k, v) for k, v in monkey.__dict__.items() if not k.startswith('_')
+        ]:
+            setattr(recording_model, name, prop)
 
 
 class RecordModel(TimeStampedModel):

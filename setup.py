@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 long_description = (
@@ -7,8 +7,8 @@ long_description = (
 )
 
 MAJOR = 0
-MINOR = 1
-MICRO = 7
+MINOR = 2
+MICRO = 0
 
 VERSION = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
 
@@ -21,8 +21,8 @@ setup(
     author='Jun Soo Ha',
     author_email='kuc2477@gmail.com',
     url='https://github.com/kuc2477/django-record/',
-    install_requires=['django'],
-    tests_require=["django", 'unipath', 'faker'],
+    install_requires=['django', 'pandas'],
+    tests_require=["django", 'pandas', 'unipath', 'faker'],
     test_suite="runtests.runtests",
     license='GNU General Public License v2 (GPLv2)',
     platforms=['OS Independent', ],
