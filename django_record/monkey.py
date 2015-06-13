@@ -14,7 +14,7 @@ from .utils import resample_records
 
 @property
 def records_in_hour(self):
-    return self.records.filter(created__year=datetime.now().hour)
+    return self.records.filter(created__hour=datetime.now().hour)
 
 
 @property
