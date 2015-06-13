@@ -25,7 +25,7 @@ def records_in_day(self):
 @property
 def records_in_week(self):
     return self.records.filter(
-        created__range=[datetime.now(), datetime.now()-timedelta(weeks=1)])
+        created__range=[datetime.now()-timedelta(weeks=1), datetime.now()])
 
 
 @property
