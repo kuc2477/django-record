@@ -243,6 +243,8 @@ TimeStampedModel.
 
 Note
 ====
+* **Recursive auditing is not currently supported.** Indirect effect only those 
+  from direct relatives will be detected and recorded.
 * **Only primitive types are supported for properties.** You must offer appropriate django field for them.
 * ``RecordModel`` is also a subclass of ``TimeStampedModel``, so make sure that
   you don't record either 'created' or 'modified' fields.
