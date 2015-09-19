@@ -1,3 +1,5 @@
+import six
+
 from copy import deepcopy
 
 from django.db import models
@@ -77,7 +79,7 @@ class RecordModelMetaClass(ModelBase):
             setattr(recording_model, name, prop)
 
 
-class RecordModel(TimeStampedModel):
+class RecordModel(six.with_metaclass(RecordModelMetaClass, TimeStampedModel)):
     """
     Automatically create records when an audited Django model instance has been
     changed either directly or indirectly.
@@ -163,8 +165,6 @@ class RecordModel(TimeStampedModel):
         RecordModel is also a subclass of TimeStampedModel, so make sure that
             you don't record fields with either name 'created' or 'modified'.
     """
-    # TODO: Python3 compatibility issue - use six module.
-    __metaclass__ = RecordModelMetaClass
 
     recording_model = NotImplemented
 

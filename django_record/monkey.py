@@ -13,6 +13,10 @@ from .utils import resample_records
 # Shortcut properties for retrieving recent records
 # =================================================
 
+def records_in_delta(self, delta):
+    # TODO: NOT IMPLEMENTED YET
+    pass
+
 @property
 def records_in_hour(self):
     return self.records\
@@ -51,6 +55,10 @@ def records_in_year(self):
 # =========================================================================
 # Shortcut properties for retrieving recent records within resampled format
 # =========================================================================
+
+def resampled_records_in_delta(self, delta, rule):
+    # TODO: NOT IMPLEMENTED YET
+    pass
 
 @property
 def resampled_records_in_hour(self):

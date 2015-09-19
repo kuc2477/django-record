@@ -18,6 +18,6 @@ def resample_records(records, rule):
 
     # Otherwise return resampled queryset.
     df = pd.DataFrame.from_records(list(records.all().values()))
-    df = df.set_index(pd.DatetimeIndex(df['created']))
+    df = df.set_index('created')
     df = df.resample(rule, how='last')
     return records.filter(id__in=df['id'])
