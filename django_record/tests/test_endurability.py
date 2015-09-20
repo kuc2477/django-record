@@ -26,7 +26,7 @@ class EndurabilityTest(TestCase):
             Article.objects.create(title=f.text()[:TITLE_MAX_LENGTH])
 
         for article in Article.objects.all():
-            for _ in xrange(COMMENT_TRIAL):
+            for _ in range(COMMENT_TRIAL):
                 if probability(COMMENT_RATE):
                     Comment.objects.create(
                         article=article,
@@ -37,7 +37,7 @@ class EndurabilityTest(TestCase):
                     )
 
         for comment in Comment.objects.all():
-            for _ in xrange(VOTE_TRIAL):
+            for _ in range(VOTE_TRIAL):
                 if probability(VOTE_RATE):
                     Vote.objects.create(
                         comment=comment,

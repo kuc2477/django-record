@@ -10,7 +10,7 @@ if not settings.configured:
     settings_dict = dict(
         INSTALLED_APPS=(
             'django_record',
-            'django_record.tests',
+            'django_record.tests'
         ),
         DATABASES={
             "default": {

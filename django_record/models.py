@@ -10,7 +10,7 @@ from django.db.models.fields import Field
 from django.db.models.base import ModelBase
 from django.db.models import Model
 
-import monkey
+from . import monkey
 
 
 class TimeStampedModel(Model):
