@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-
+from os import path
 import sys
+
 import django
-import unipath
 
 from django.conf import settings
 
@@ -18,7 +17,6 @@ if not settings.configured:
                 "ENGINE": "django.db.backends.sqlite3",
             }
         },
-        MIDDLEWARE_CLASSES = ()
     )
 
     settings.configure(**settings_dict)
@@ -27,7 +25,7 @@ if not settings.configured:
 
 
 def runtests():
-    parent = unipath.Path(__file__).ancestor(2)
+    parent = path.dirname(path.abspath(__file__))
     sys.path.insert(0, parent)
 
     # test for django under 1.8

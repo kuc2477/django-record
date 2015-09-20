@@ -12,10 +12,10 @@ f = Faker()
 
 class UtilsTest(TestCase):
     def setUp(self):
-        article = Article.objects.create(title=f.lorem()[:TITLE_MAX_LENGTH])
+        article = Article.objects.create(title=f.text()[:TITLE_MAX_LENGTH])
         Comment.objects.create(
-            article=article, point=f.lorem()[:POINT_MAX_LENGTH],
-            text=f.lorem()[:TEXT_MAX_LENGTH],
+            article=article, point=f.text()[:POINT_MAX_LENGTH],
+            text=f.text()[:TEXT_MAX_LENGTH],
             impact=randint(0, 10),
             impact_rate=uniform(0, 1)
         )

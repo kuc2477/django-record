@@ -8,7 +8,7 @@ long_description = (
 
 MAJOR = 0
 MINOR = 2
-MICRO = 3
+MICRO = 4
 
 VERSION = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
 
@@ -21,8 +21,8 @@ setup(
     author='Jun Soo Ha',
     author_email='kuc2477@gmail.com',
     url='https://github.com/kuc2477/django-record/',
-    install_requires=['django', 'pandas'],
-    tests_require=["django", 'pandas', 'unipath', 'fake-factory'],
+    install_requires=['django', 'pandas', 'six'],
+    tests_requires=['fake-factory'],
     test_suite="runtests.runtests",
     license='GNU General Public License v2 (GPLv2)',
     platforms=['OS Independent', ],
@@ -34,6 +34,7 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
-        'Framework :: Django',
+        'Programming Language :: Python :: 3',
+        'Framework :: Django'
     ]
 )

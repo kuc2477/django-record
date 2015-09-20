@@ -14,8 +14,7 @@ from .utils import resample_records
 # =================================================
 
 def records_in_delta(self, delta):
-    # TODO: NOT IMPLEMENTED YET
-    pass
+    return self.records.filter(created__gte=datetime.now()-delta)
 
 @property
 def records_in_hour(self):
@@ -57,8 +56,7 @@ def records_in_year(self):
 # =========================================================================
 
 def resampled_records_in_delta(self, delta, rule):
-    # TODO: NOT IMPLEMENTED YET
-    pass
+    return resampled_records(self.records_in_delta(delta), rule)
 
 @property
 def resampled_records_in_hour(self):

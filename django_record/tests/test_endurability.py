@@ -23,15 +23,15 @@ class EndurabilityTest(TestCase):
     @classmethod
     def setUpClass(self):
         for _ in range(ARTICLE_NUM):
-            Article.objects.create(title=f.lorem()[TITLE_MAX_LENGTH])
+            Article.objects.create(title=f.text()[:TITLE_MAX_LENGTH])
 
         for article in Article.objects.all():
             for _ in xrange(COMMENT_TRIAL):
                 if probability(COMMENT_RATE):
                     Comment.objects.create(
                         article=article,
-                        point=f.lorem()[POINT_MAX_LENGTH],
-                        text=f.lorem()[TEXT_MAX_LENGTH],
+                        point=f.text()[:POINT_MAX_LENGTH],
+                        text=f.text()[:TEXT_MAX_LENGTH],
                         impact=randint(0, 10),
                         impact_rate=uniform(0, 1)
                     )
