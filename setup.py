@@ -22,7 +22,7 @@ setup(
     author_email='kuc2477@gmail.com',
     url='https://github.com/kuc2477/django-record/',
     install_requires=['django', 'pandas'],
-    tests_require=["django", 'pandas', 'unipath', 'faker-factory'],
+    tests_require=["django", 'pandas', 'unipath', 'fake-factory'],
     test_suite="runtests.runtests",
     license='GNU General Public License v2 (GPLv2)',
     platforms=['OS Independent', ],
