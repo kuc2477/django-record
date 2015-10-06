@@ -19,14 +19,14 @@ if not settings.configured:
         },
     )
 
+    # configure settings
     settings.configure(**settings_dict)
     if django.VERSION >= (1, 7):
         django.setup()
 
 
 def runtests():
-    parent = path.dirname(path.abspath(__file__))
-    sys.path.insert(0, parent)
+    sys.path.insert(0, path.dirname(path.abspath(__file__)))
 
     # test for django under 1.8
     try:
@@ -40,9 +40,12 @@ def runtests():
         runner_class = DiscoverRunner
         test_args = ['django_record']
 
+    # run tests
     failures = runner_class(
-        verbosity=2, interactive=True, failfast=False).run_tests(test_args)
+        verbosity=2, interactive=True, failfast=False
+    ).run_tests(test_args)
 
+    # exit with errors
     sys.exit(failures)
 
 

@@ -21,7 +21,7 @@ Author
 
 Compatibility
 =============
-* Python3 is currently not supported.
+* Tested against Python 2.7 and 3.4
   
 
 Dependencies
@@ -54,7 +54,7 @@ You can access records via record manager ``records`` in your recorded model
 instance. You can also access recorded model's instance via ``recording``, 
 which is in effect ``ForeignKey``. from your records.
 
-More conveniently, just mixin ``RecordedModelMixin`` to your model and provide 
+More conveniently, just mix ``RecordedModelMixin`` into your model and provide 
 ``recording_fields`` and ``auditing_relatives`` as ``RecordModel`` to record 
 specific model.
 

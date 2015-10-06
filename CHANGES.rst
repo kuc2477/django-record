@@ -2,6 +2,10 @@
 Changes
 =======
 
+09.20.2015
+==========
+* Support Python 3.4
+
 06.13.2015
 ==========
 * Following shortcut properties added to *recording_model*. All of properties
