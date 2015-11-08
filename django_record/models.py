@@ -10,10 +10,9 @@ from django.db.models.fields import Field
 from django.db.models.base import ModelBase
 from django.db.models import Model
 
-from . import monkey
+from .querysets import RecordQuerySet
 
-
-class TimeStampedModel(Model):
+class AbstractTimeStampedModel(Model):
     created = models.DateTimeField(auto_now=True)
     modified = models.DateTimeField(auto_now_add=True)
 
@@ -65,21 +64,12 @@ class RecordModelMetaClass(ModelBase):
             recording_model, related_name='records'
         )
 
-        # Monkey-patch recording model with shortcut properties.
-        cls.monkey_patch(recording_model)
-
         # Generate RecordModel subclass
         return super_new(cls, name, bases, attrs)
 
-    @staticmethod
-    def monkey_patch(recording_model):
-        for name, prop in [
-            (k, v) for k, v in monkey.__dict__.items() if not k.startswith('_')
-        ]:
-            setattr(recording_model, name, prop)
 
-
-class RecordModel(six.with_metaclass(RecordModelMetaClass, TimeStampedModel)):
+class RecordModel(six.with_metaclass(RecordModelMetaClass,
+                                     AbstractTimeStampedModel)):
     """
     Automatically create records when an audited Django model instance has been
     changed either directly or indirectly.
@@ -107,7 +97,7 @@ class RecordModel(six.with_metaclass(RecordModelMetaClass, TimeStampedModel)):
     Example:
         from django.db import models
         from django.contrib.auth.models import User
-        from django_record.models import TimeStampedModel
+        from django_record.models import AbstractTimeStampedModel
         from django_record.models import RecordModel
 
 
@@ -162,7 +152,7 @@ class RecordModel(six.with_metaclass(RecordModelMetaClass, TimeStampedModel)):
         Only primitive types are supported for properties and you must
             offer appropriate field for them when you put a tuple of a property
             name and it's field in 'recording_fields' for expected recording.
-        RecordModel is also a subclass of TimeStampedModel, so make sure that
+        RecordModel is also a subclass of AbstractTimeStampedModel, so make sure that
             you don't record fields with either name 'created' or 'modified'.
     """
 
@@ -204,11 +194,19 @@ class RecordModel(six.with_metaclass(RecordModelMetaClass, TimeStampedModel)):
         # performance issue in large scale database.
         audit_all_relatives = False
 
-    class Meta(TimeStampedModel.Meta):
+    class Meta(AbstractTimeStampedModel.Meta):
         abstract = True
 
         # Latest Records will be retrieved by `latest()` filter.
         get_latest_by = 'created'
+
+
+    # ===================
+    # RecordModel Manager
+    # ===================
+
+    objects = RecordQuerySet.as_manager()
+
 
     # ====================
     # RecordModel Methods

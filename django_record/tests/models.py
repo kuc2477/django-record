@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Sum
 
-from django_record.models import TimeStampedModel
+from django_record.models import AbstractTimeStampedModel
 from django_record.models import RecordModel
 
 from django_record.mixins import RecordedModelMixin
@@ -12,7 +12,7 @@ POINT_MAX_LENGTH = 100
 TEXT_MAX_LENGTH = 300
 
 
-class Article(RecordedModelMixin, TimeStampedModel):
+class Article(RecordedModelMixin, AbstractTimeStampedModel):
     title = models.CharField(max_length=TITLE_MAX_LENGTH)
 
     @property
@@ -23,7 +23,7 @@ class Article(RecordedModelMixin, TimeStampedModel):
     recording_fields = [('comment_count', models.IntegerField())]
 
 
-class Comment(TimeStampedModel):
+class Comment(AbstractTimeStampedModel):
     article = models.ForeignKey(Article, related_name='comments')
     point = models.CharField(max_length=POINT_MAX_LENGTH)
     text = models.TextField(max_length=TEXT_MAX_LENGTH)
