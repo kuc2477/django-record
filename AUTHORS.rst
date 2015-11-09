@@ -1,9 +1,9 @@
-**django-record** is written and maintained by Jun Soo Ha.
+**django-record** is written and maintained by Ha Junsoo
 
 Development Lead
 ````````````````
 
-- Jun Soo Ha <kuc2477@gmail.com>
+- Ha Junsoo <kuc2477@gmail.com>
 
 Contributions
 ``````````````
