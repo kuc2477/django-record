@@ -19,15 +19,12 @@ Author
 * `Ha Junsoo <kuc2477@gmail.com>`_
 
 
-Compatibility
-=============
-* Tested against Python 2.7 and 3.4
-  
-
-Dependencies
+Requirements
 ============
-* *django-record* supports `django <https://github.com/django/django>`_ (>= 1.7) or later.
-* Requires `unipath <https://github.com/mikeorr/Unipath>`_ and `faker <https://github.com/joke2k/faker>`_ for tests.
+* Tested against Python 2.7 and 3.4
+* *django-record* supports `django <https://github.com/django/django>`_ 1.7 or later.
+* Requires `pandas <https://github.com/pydaya/pandas>`__ 0.17.0 or later.
+* Requires `faker <https://github.com/joke2k/faker>`_ for tests.
 
 
 Installation
