@@ -5,7 +5,7 @@ Changes
 11.09.2015 (0.2.5 release)
 ==========================
 * Renamed TimeStampedModel to AbstractTimeStampedModel.
-* Replaced monkey patched shortcut properties with `RecordQueryset` filters.
+* Replaced monkey patched shortcut properties with ``RecordQueryset`` filters.
   Those shortcut properties are now deprecated.
 
 09.20.2015
