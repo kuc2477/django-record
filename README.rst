@@ -52,8 +52,7 @@ instance. You can also access recorded model's instance via ``recording``,
 which is in effect just ordinary ``ForeignKey``, from your records.
 
 More conveniently, **just mix** ``RecordedModelMixin`` into your model and provide 
-``recording_fields`` and ``auditing_relatives`` to ``RecordModel`` record 
-specific model.
+``recording_fields`` and ``auditing_relatives``.
 
 .. _`handcrafted, ad-hoc signals`: https://djangosnippets.org/snippets/500/
 .. _`overriding save() methods of your models`: https://trickveda.wordpress.com/2014/01/22/overriding-save-method-in-django-models/
