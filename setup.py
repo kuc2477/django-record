@@ -7,8 +7,8 @@ long_description = (
 )
 
 MAJOR = 0
-MINOR = 2
-MICRO = 4
+MINOR = 3
+MICRO = 0
 
 VERSION = '%s.%s.%s' % (MAJOR, MINOR, MICRO)
 
@@ -18,10 +18,10 @@ setup(
     version=VERSION,
     description='Models and mixins for recording changes in Django models',
     long_description=long_description,
-    author='Jun Soo Ha',
+    author='Ha Junsoo',
     author_email='kuc2477@gmail.com',
     url='https://github.com/kuc2477/django-record/',
-    install_requires=['django', 'pandas', 'six'],
+    install_requires=['django>=1.7', 'pandas>=0.17.0', 'six'],
     tests_require=['fake-factory'],
     test_suite="runtests.runtests",
     license='GNU General Public License v2 (GPLv2)',
