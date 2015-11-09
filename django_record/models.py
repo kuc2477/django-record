@@ -12,6 +12,7 @@ from django.db.models import Model
 
 from .querysets import RecordQuerySet
 
+
 class AbstractTimeStampedModel(Model):
     created = models.DateTimeField(auto_now=True)
     modified = models.DateTimeField(auto_now_add=True)
@@ -70,9 +71,8 @@ class RecordModelMetaClass(ModelBase):
 
 class RecordModel(six.with_metaclass(RecordModelMetaClass,
                                      AbstractTimeStampedModel)):
-    """
-    Automatically create records when an audited Django model instance has been
-    changed either directly or indirectly.
+    """Automatically create records when an audited Django model instance has
+    been changed either directly or indirectly.
 
     RecordModel will detect any changes of 'recording_fields' in
     'recording_model' at it's post save() time or auditing relative's
@@ -152,8 +152,9 @@ class RecordModel(six.with_metaclass(RecordModelMetaClass,
         Only primitive types are supported for properties and you must
             offer appropriate field for them when you put a tuple of a property
             name and it's field in 'recording_fields' for expected recording.
-        RecordModel is also a subclass of AbstractTimeStampedModel, so make sure that
-            you don't record fields with either name 'created' or 'modified'.
+        RecordModel is also a subclass of AbstractTimeStampedModel, so make sure
+            that you don't record fields with either name 'created' or
+            'modified'.
     """
 
     recording_model = NotImplemented
