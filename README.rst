@@ -98,6 +98,25 @@ Usage
            ('my_nonlocal_property', models.TextField())
        ] 
 
+
+    # To get the model instance's all records
+    >>> my_article.records.all()
+
+    # To get queryset of the model instance's records created in specific 
+    # time threshold
+    >>> my_article.records.created_in_years(2)
+    >>> my_article.records.created_in_days(3)
+    >>> my_article.records.created_in_minutes(5)
+
+    # To resample records of today by hour
+    >>> my_article.records.created_in_days().resample('T')
+
+    # To get record contents
+    >>> my_article.records.first().text
+    >>> my_article.records.first().my_local_property
+    >>> my_article.records.first().my_nonlocal_property
+
+
 Note
 ====
 * **Recursive auditing is currently not supported.** Indirect effect only those 
