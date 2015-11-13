@@ -40,17 +40,12 @@ def register_record_model(sender, **kwargs):
         # Register a record model.
         type('{}Record'.format(sender.__name__), (RecordModel,), attrs)
 
-        recording_fields = []
         # Refine `recording_fields` into plain list of names of recording
         # fields, rather than mix of tuples and strings, for users to
         # easily access and make use of this attribute.
-        for field_entry in sender.recording_fields:
-            if isinstance(field_entry, tuple):
-                field_name, _ = field_entry
-            else:
-                field_name = field_entry
-            recording_fields.append(field_name)
+        sender.recording_fields = \
+            [field_entry[0] if isinstance(field_entry, tuple) else
+             field_entry for field_entry in sender.recording_fields]
 
-        sender.recording_fields = recording_fields
 
 class_prepared.connect(register_record_model, weak=False)
